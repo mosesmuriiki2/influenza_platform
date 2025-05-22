@@ -1,0 +1,139 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Create Campaign - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h1 class="h3 mb-0">Create New Campaign</h1>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <h4 class="h5 mb-3">Campaign Details</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="title" class="form-label">Campaign Title*</label>
+                                    <input type="text" class="form-control" id="title" name="title" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="budget" class="form-label">Budget (USD)*</label>
+                                    <input type="number" class="form-control" id="budget" name="budget" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="description" class="form-label">Campaign Description*</label>
+                                    <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label for="requirements" class="form-label">Campaign Requirements*</label>
+                                    <textarea class="form-control" id="requirements" name="requirements" rows="3" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="h5 mb-3">Campaign Timeline</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="start_date" class="form-label">Start Date*</label>
+                                    <input type="date" class="form-control" id="start_date" name="start_date" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="end_date" class="form-label">End Date*</label>
+                                    <input type="date" class="form-control" id="end_date" name="end_date" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="h5 mb-3">Campaign Images</h4>
+                            {{ formset.management_form }}
+                            <div class="row g-3" id="image-formset">
+                                {% for form in formset %}
+                                <div class="col-md-4 image-form">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Campaign Image</label>
+                                                {{ form.image }}
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Caption</label>
+                                                {{ form.caption }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="h5 mb-3">Target Audience</h4>
+                            <div class="col-12">
+                                <label for="target_audience" class="form-label">Target Audience Description*</label>
+                                <textarea class="form-control" id="target_audience" name="target_audience" rows="3" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'dashboard' %}" class="btn btn-light me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Create Campaign</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+
+    // Image preview
+    document.querySelectorAll('input[type="file"]').forEach(function(input) {
+        input.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader()
+                var preview = document.createElement('img')
+                preview.className = 'img-thumbnail mt-2'
+                preview.style.maxHeight = '150px'
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result
+                }
+
+                reader.readAsDataURL(this.files[0])
+                
+                // Remove existing preview if any
+                var existingPreview = this.parentElement.querySelector('img')
+                if (existingPreview) {
+                    existingPreview.remove()
+                }
+                
+                this.parentElement.appendChild(preview)
+            }
+        })
+    })
+</script>
+{% endblock %}
+{% endblock %}

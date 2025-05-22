@@ -1,0 +1,201 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Available Campaigns - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0">Available Campaigns</h1>
+            <p class="text-muted">Browse and apply for marketing campaigns from businesses</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="mb-0">Campaign Listings</h5>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search campaigns..." id="campaign-search">
+                                <button class="btn btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="campaigns-table">
+                            <thead>
+                                <tr>
+                                    <th>Campaign</th>
+                                    <th>Brand</th>
+                                    <th>Category</th>
+                                    <th>Budget</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample campaign data - will be replaced with dynamic data -->
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img src="https://via.placeholder.com/40" alt="Brand logo" class="rounded">
+                                            </div>
+                                            <div class="ms-3">
+                                                <h6 class="mb-0">Summer Fashion Collection</h6>
+                                                <small class="text-muted">Instagram, TikTok</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Fashion Brand Co.</td>
+                                    <td><span class="badge bg-info text-dark">Fashion</span></td>
+                                    <td>$500-$1000</td>
+                                    <td>2 weeks</td>
+                                    <td><span class="badge bg-success">Open</span></td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">View Details</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img src="https://via.placeholder.com/40" alt="Brand logo" class="rounded">
+                                            </div>
+                                            <div class="ms-3">
+                                                <h6 class="mb-0">Fitness App Promotion</h6>
+                                                <small class="text-muted">Instagram, YouTube</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>FitLife App</td>
+                                    <td><span class="badge bg-info text-dark">Health & Fitness</span></td>
+                                    <td>$300-$800</td>
+                                    <td>1 month</td>
+                                    <td><span class="badge bg-success">Open</span></td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">View Details</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img src="https://via.placeholder.com/40" alt="Brand logo" class="rounded">
+                                            </div>
+                                            <div class="ms-3">
+                                                <h6 class="mb-0">Organic Skincare Launch</h6>
+                                                <small class="text-muted">Instagram, TikTok, Facebook</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>NatureSkin</td>
+                                    <td><span class="badge bg-info text-dark">Beauty</span></td>
+                                    <td>$800-$1500</td>
+                                    <td>3 weeks</td>
+                                    <td><span class="badge bg-warning text-dark">Limited Spots</span></td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">View Details</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-white">
+                    <nav aria-label="Campaign pagination">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Featured Campaigns</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="Campaign image">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tech Gadget Review</h5>
+                                    <p class="card-text">Looking for tech influencers to review our latest smartphone accessories.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-success">$1000-$2000</span>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Apply Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="Campaign image">
+                                <div class="card-body">
+                                    <h5 class="card-title">Food Delivery Service</h5>
+                                    <p class="card-text">Seeking food bloggers and lifestyle influencers for our meal delivery service.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-success">$500-$1200</span>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Apply Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="Campaign image">
+                                <div class="card-body">
+                                    <h5 class="card-title">Travel Experience</h5>
+                                    <p class="card-text">Looking for travel influencers to showcase our resort destinations.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-success">$2000-$5000</span>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Apply Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#campaigns-table').DataTable({
+            "paging": true,
+            "ordering": true,
+            "info": true,
+            "responsive": true,
+            "pageLength": 10,
+            "dom": '<"top"f>rt<"bottom"lp><"clear">'
+        });
+    });
+</script>
+{% endblock %}

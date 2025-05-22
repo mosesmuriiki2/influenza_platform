@@ -1,0 +1,104 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Edit Influencer Profile - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-md-8">
+        <div class="card shadow-lg animate__animated animate__fadeIn animate__faster">
+            <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #6cb2eb, #2a7fba); border-radius: 8px 8px 0 0;">
+                <h2 class="h4 text-white mb-0"><i class="bi bi-person-gear me-2"></i>Edit Your Influencer Profile</h2>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data" class="animate__animated animate__fadeInUp animate__delay-1s">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_full_name" class="form-label fw-bold">Full Name</label>
+                            <input type="text" name="full_name" value="{{ form.instance.full_name }}" class="form-control" id="id_full_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_phone_number" class="form-label fw-bold">Phone Number</label>
+                            <input type="text" name="phone_number" value="{{ form.instance.phone_number }}" class="form-control" id="id_phone_number">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_bio" class="form-label fw-bold">Bio</label>
+                        <textarea name="bio" class="form-control" id="id_bio" rows="4">{{ form.instance.bio }}</textarea>
+                        <div class="form-text">Tell brands about yourself and what makes you unique.</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_profile_picture" class="form-label fw-bold">Profile Picture</label>
+                        {% if form.instance.profile_picture %}
+                        <div class="mb-2">
+                            <img src="{{ form.instance.profile_picture.url }}" alt="Current profile picture" class="img-thumbnail" style="max-width: 150px;">
+                            <p class="form-text">Current profile picture</p>
+                        </div>
+                        {% endif %}
+                        <input type="file" name="profile_picture" class="form-control" id="id_profile_picture">
+                        <div class="form-text">Upload a new profile picture (optional).</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_date_of_birth" class="form-label fw-bold">Date of Birth</label>
+                        <input type="date" name="date_of_birth" value="{{ form.instance.date_of_birth|date:'Y-m-d' }}" class="form-control" id="id_date_of_birth">
+                    </div>
+                    
+                    <h4 class="h5 mb-3 mt-5">Social Media Accounts</h4>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_instagram_handle" class="form-label fw-bold">Instagram Handle</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" name="instagram_handle" value="{{ form.instance.instagram_handle }}" class="form-control" id="id_instagram_handle">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_twitter_handle" class="form-label fw-bold">Twitter Handle</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" name="twitter_handle" value="{{ form.instance.twitter_handle }}" class="form-control" id="id_twitter_handle">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_tiktok_handle" class="form-label fw-bold">TikTok Handle</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" name="tiktok_handle" value="{{ form.instance.tiktok_handle }}" class="form-control" id="id_tiktok_handle">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_youtube_channel" class="form-label fw-bold">YouTube Channel</label>
+                            <input type="text" name="youtube_channel" value="{{ form.instance.youtube_channel }}" class="form-control" id="id_youtube_channel">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_facebook_page" class="form-label fw-bold">Facebook Page</label>
+                        <input type="text" name="facebook_page" value="{{ form.instance.facebook_page }}" class="form-control" id="id_facebook_page">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_categories" class="form-label fw-bold">Categories</label>
+                        <input type="text" name="categories" value="{{ form.instance.categories }}" class="form-control" id="id_categories">
+                        <div class="form-text">Enter comma-separated categories (e.g., Fashion, Beauty, Tech).</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg" style="background: linear-gradient(135deg, #6cb2eb, #2a7fba); border: none;">
+                            <i class="bi bi-save me-2"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

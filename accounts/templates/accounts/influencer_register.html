@@ -1,0 +1,95 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Register as Influencer - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #6cb2eb, #2a7fba);">
+                <h2 class="h3 mb-0 text-white"><i class="bi bi-person-bounding-box me-2"></i>Register as an Influencer</h2>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-4 text-center">
+                    <p class="text-muted">Join our community of influencers and start collaborating with top brands</p>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="id_email" class="form-label fw-bold">Email address</label>
+                        <input type="email" name="email" class="form-control form-control-lg" id="id_email" required>
+                        <div class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="id_first_name" class="form-label fw-bold">First Name</label>
+                            <input type="text" name="first_name" class="form-control form-control-lg" id="id_first_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_last_name" class="form-label fw-bold">Last Name</label>
+                            <input type="text" name="last_name" class="form-control form-control-lg" id="id_last_name" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" id="id_password" required>
+                        <div class="form-text">Choose a strong password with at least 8 characters.</div>
+                    </div>
+                    
+                    <h5 class="mt-4 mb-3 border-bottom pb-2">Social Media Accounts</h5>
+                    <p class="text-muted small mb-3">Add your social media accounts to help businesses find you</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-facebook"></i></span>
+                                <input type="url" name="facebook_url" class="form-control" id="id_facebook_url" placeholder="Facebook profile URL">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-instagram"></i></span>
+                                <input type="url" name="instagram_url" class="form-control" id="id_instagram_url" placeholder="Instagram profile URL">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-twitter-x"></i></span>
+                                <input type="url" name="twitter_url" class="form-control" id="id_twitter_url" placeholder="X (Twitter) profile URL">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-tiktok"></i></span>
+                                <input type="url" name="tiktok_url" class="form-control" id="id_tiktok_url" placeholder="TikTok profile URL">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center mb-3">
+                    <p>Or register with:</p>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-facebook me-2"></i>Register with Facebook
+                    </a>
+                    <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-outline-danger">
+                        <i class="bi bi-google me-2"></i>Register with Google
+                    </a>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <p class="mb-0">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

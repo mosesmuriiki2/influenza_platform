@@ -1,0 +1,71 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Compose Message - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3">{% if is_reply %}Reply to Message{% else %}Compose New Message{% endif %}</h1>
+            <a href="{% url 'messages_inbox' %}" class="btn btn-outline-secondary">Back to Inbox</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-4">
+        <div class="list-group">
+            <a href="{% url 'messages_inbox' %}" class="list-group-item list-group-item-action">Inbox {% if unread_count %}<span class="badge bg-danger rounded-pill float-end">{{ unread_count }}</span>{% endif %}</a>
+            <a href="{% url 'messages_sent' %}" class="list-group-item list-group-item-action">Sent</a>
+        </div>
+    </div>
+    
+    <div class="col-md-9 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h5 mb-0">{% if is_reply %}Reply to Message{% else %}Compose New Message{% endif %}</h2>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_recipient" class="form-label">To:</label>
+                        {{ form.recipient }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_subject" class="form-label">Subject:</label>
+                        {{ form.subject }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_content" class="form-label">Message:</label>
+                        {{ form.content }}
+                    </div>
+                    
+                    {% if original_message %}
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <h3 class="h6 mb-0">Original Message</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>From:</strong> {{ original_message.sender.get_full_name|default:original_message.sender.email }}</p>
+                            <p><strong>Date:</strong> {{ original_message.created_at|date:"F j, Y, g:i a" }}</p>
+                            <hr>
+                            <div class="original-content">
+                                {{ original_message.content|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

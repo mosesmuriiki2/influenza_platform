@@ -1,0 +1,49 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Register as Business - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #6cb2eb, #2a7fba);">
+                <h2 class="h3 mb-0 text-white"><i class="bi bi-building me-2"></i>Register as a Business</h2>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-4 text-center">
+                    <p class="text-muted">Join our platform to connect with top influencers and grow your business</p>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="id_email" class="form-label fw-bold">Business Email address</label>
+                        <input type="email" name="email" class="form-control form-control-lg" id="id_email" required>
+                        <div class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="id_first_name" class="form-label fw-bold">Contact First Name</label>
+                            <input type="text" name="first_name" class="form-control form-control-lg" id="id_first_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_last_name" class="form-label fw-bold">Contact Last Name</label>
+                            <input type="text" name="last_name" class="form-control form-control-lg" id="id_last_name" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" id="id_password" required>
+                        <div class="form-text">Choose a strong password with at least 8 characters.</div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <p class="mb-0">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

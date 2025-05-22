@@ -1,0 +1,52 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Sent Messages - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3">Sent Messages</h1>
+            <a href="{% url 'compose_message' %}" class="btn btn-primary">Compose New Message</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-4">
+        <div class="list-group">
+            <a href="{% url 'messages_inbox' %}" class="list-group-item list-group-item-action">Inbox {% if unread_count %}<span class="badge bg-danger rounded-pill float-end">{{ unread_count }}</span>{% endif %}</a>
+            <a href="{% url 'messages_sent' %}" class="list-group-item list-group-item-action active">Sent</a>
+        </div>
+    </div>
+    
+    <div class="col-md-9 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Sent Messages</h2>
+            </div>
+            <div class="card-body">
+                {% if messages_list %}
+                    <div class="list-group">
+                        {% for message in messages_list %}
+                        <a href="{% url 'view_message' message.id %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ message.subject|default:"(No Subject)" }}</h6>
+                                    <p class="mb-1 text-truncate">To: {{ message.recipient.get_full_name|default:message.recipient.email }}</p>
+                                    <small class="text-muted">{{ message.created_at|date:"F j, Y, g:i a" }}</small>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <p class="mb-0">You haven't sent any messages yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

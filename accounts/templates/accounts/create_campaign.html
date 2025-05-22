@@ -1,0 +1,167 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Create Campaign - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Create New Campaign</h1>
+                <a href="#" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Campaign Details</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_campaign_name" class="form-label">Campaign Name</label>
+                            <input type="text" class="form-control" id="id_campaign_name" name="campaign_name" required>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="id_category" class="form-label">Category</label>
+                                <select class="form-select" id="id_category" name="category" required>
+                                    <option value="" selected disabled>Select a category</option>
+                                    <option value="Fashion">Fashion</option>
+                                    <option value="Beauty">Beauty</option>
+                                    <option value="Lifestyle">Lifestyle</option>
+                                    <option value="Tech">Tech</option>
+                                    <option value="Food">Food & Beverage</option>
+                                    <option value="Travel">Travel</option>
+                                    <option value="Fitness">Health & Fitness</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_campaign_type" class="form-label">Campaign Type</label>
+                                <select class="form-select" id="id_campaign_type" name="campaign_type" required>
+                                    <option value="" selected disabled>Select campaign type</option>
+                                    <option value="Product Review">Product Review</option>
+                                    <option value="Sponsored Post">Sponsored Post</option>
+                                    <option value="Brand Ambassador">Brand Ambassador</option>
+                                    <option value="Affiliate Marketing">Affiliate Marketing</option>
+                                    <option value="Event Promotion">Event Promotion</option>
+                                    <option value="Giveaway">Giveaway</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="id_description" class="form-label">Campaign Description</label>
+                            <textarea class="form-control" id="id_description" name="description" rows="5" required placeholder="Describe your campaign, goals, and what you're looking for from influencers..."></textarea>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="id_start_date" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="id_start_date" name="start_date" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_end_date" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="id_end_date" name="end_date" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="id_min_budget" class="form-label">Minimum Budget ($)</label>
+                                <input type="number" class="form-control" id="id_min_budget" name="min_budget" min="0" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_max_budget" class="form-label">Maximum Budget ($)</label>
+                                <input type="number" class="form-control" id="id_max_budget" name="max_budget" min="0" required>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mt-5 mb-3 border-bottom pb-2">Influencer Requirements</h5>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Platforms</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Instagram" id="id_platform_instagram" name="platforms[]">
+                                    <label class="form-check-label" for="id_platform_instagram">
+                                        <i class="bi bi-instagram me-2 text-danger"></i>Instagram
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="TikTok" id="id_platform_tiktok" name="platforms[]">
+                                    <label class="form-check-label" for="id_platform_tiktok">
+                                        <i class="bi bi-tiktok me-2"></i>TikTok
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Facebook" id="id_platform_facebook" name="platforms[]">
+                                    <label class="form-check-label" for="id_platform_facebook">
+                                        <i class="bi bi-facebook me-2 text-primary"></i>Facebook
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Twitter" id="id_platform_twitter" name="platforms[]">
+                                    <label class="form-check-label" for="id_platform_twitter">
+                                        <i class="bi bi-twitter-x me-2"></i>X (Twitter)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="YouTube" id="id_platform_youtube" name="platforms[]">
+                                    <label class="form-check-label" for="id_platform_youtube">
+                                        <i class="bi bi-youtube me-2 text-danger"></i>YouTube
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_min_followers" class="form-label">Minimum Followers</label>
+                                <select class="form-select" id="id_min_followers" name="min_followers">
+                                    <option value="1000">1,000+</option>
+                                    <option value="5000">5,000+</option>
+                                    <option value="10000">10,000+</option>
+                                    <option value="50000">50,000+</option>
+                                    <option value="100000">100,000+</option>
+                                    <option value="500000">500,000+</option>
+                                    <option value="1000000">1,000,000+</option>
+                                </select>
+                                
+                                <label for="id_engagement_rate" class="form-label mt-3">Minimum Engagement Rate</label>
+                                <select class="form-select" id="id_engagement_rate" name="engagement_rate">
+                                    <option value="1">1%+</option>
+                                    <option value="2">2%+</option>
+                                    <option value="3">3%+</option>
+                                    <option value="4">4%+</option>
+                                    <option value="5">5%+</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="id_deliverables" class="form-label">Deliverables</label>
+                            <textarea class="form-control" id="id_deliverables" name="deliverables" rows="3" placeholder="Specify what you expect influencers to deliver (e.g., 1 Instagram post, 2 Stories, etc.)"></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="id_campaign_image" class="form-label">Campaign Image (Optional)</label>
+                            <input type="file" class="form-control" id="id_campaign_image" name="campaign_image" accept="image/*">
+                            <div class="form-text">Upload an image to represent your campaign. Maximum file size: 5MB.</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg">Create Campaign</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Complete Your Influencer Profile - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #6cb2eb, #2a7fba);">
+                <h2 class="h3 mb-0 text-white">Complete Your Influencer Profile</h2>
+                <p class="text-white-50 mb-0">Tell us more about yourself and your social media presence</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <h5 class="mb-3 border-bottom pb-2">Personal Information</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_full_name" class="form-label fw-bold">Full Name</label>
+                            <input type="text" name="full_name" class="form-control" id="id_full_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_date_of_birth" class="form-label fw-bold">Date of Birth</label>
+                            <input type="date" name="date_of_birth" class="form-control" id="id_date_of_birth">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_phone_number" class="form-label">Phone Number</label>
+                            <input type="tel" name="phone_number" class="form-control" id="id_phone_number">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_profile_picture" class="form-label">Profile Picture</label>
+                            <input type="file" name="profile_picture" class="form-control" id="id_profile_picture">
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="id_bio" class="form-label">Bio</label>
+                            <textarea name="bio" class="form-control" id="id_bio" rows="3" placeholder="Tell us about yourself, your content style, and your audience"></textarea>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3">Social Media Accounts</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_instagram_handle" class="form-label">Instagram Handle</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" name="instagram_handle" class="form-control" id="id_instagram_handle">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_twitter_handle" class="form-label">Twitter Handle</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" name="twitter_handle" class="form-control" id="id_twitter_handle">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_tiktok_handle" class="form-label">TikTok Handle</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" name="tiktok_handle" class="form-control" id="id_tiktok_handle">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_youtube_channel" class="form-label">YouTube Channel</label>
+                            <input type="text" name="youtube_channel" class="form-control" id="id_youtube_channel">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_facebook_page" class="form-label">Facebook Page</label>
+                            <input type="text" name="facebook_page" class="form-control" id="id_facebook_page">
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3">Content Categories</h5>
+                    <div class="row mb-4">
+                        <div class="col-12 mb-3">
+                            <label for="id_categories" class="form-label">Categories</label>
+                            <input type="text" name="categories" class="form-control" id="id_categories" placeholder="Fashion, Beauty, Tech, Fitness, etc. (comma separated)">
+                            <div class="form-text">Enter categories that best describe your content, separated by commas.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Complete Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

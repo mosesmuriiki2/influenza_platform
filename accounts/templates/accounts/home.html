@@ -1,0 +1,399 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Influenza - Influencer Marketing Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Parallax Effect -->
+<section class="hero-section py-5" style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1557838923-2985c318be48?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center; background-size: cover; background-attachment: fixed;">
+    <div class="container py-5">
+        <div class="row align-items-center py-5">
+            <div class="col-lg-6 animate__animated animate__fadeInLeft">
+                <h1 class="display-4 fw-bold mb-4 text-white">The Future of Influencer Marketing</h1>
+                <p class="lead mb-4 text-white">Influenza bridges the gap between brands and creators with our powerful, data-driven platform.</p>
+                <div class="d-flex gap-3 mb-4 text-white">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                        <span>500+ Successful Campaigns</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                        <span>10,000+ Active Users</span>
+                    </div>
+                </div>
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="{% url 'register_choice' %}" class="btn btn-primary btn-lg px-4 me-md-2 animate__animated animate__pulse animate__infinite animate__slower">Get Started</a>
+                    <a href="#features" class="btn btn-outline-light btn-lg px-4">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-6 animate__animated animate__fadeInRight">
+                <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Influenza Platform" class="img-fluid rounded shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Counter Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4 mb-md-0 animate__animated animate__fadeIn">
+                <div class="display-4 fw-bold text-primary" data-count="500">500+</div>
+                <p class="text-muted">Campaigns Completed</p>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-0 animate__animated animate__fadeIn" data-wow-delay="0.2s">
+                <div class="display-4 fw-bold text-primary" data-count="10000">10,000+</div>
+                <p class="text-muted">Active Users</p>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-0 animate__animated animate__fadeIn" data-wow-delay="0.4s">
+                <div class="display-4 fw-bold text-primary" data-count="50">50+</div>
+                <p class="text-muted">Countries Reached</p>
+            </div>
+            <div class="col-md-3 animate__animated animate__fadeIn" data-wow-delay="0.6s">
+                <div class="display-4 fw-bold text-primary" data-count="95">95%</div>
+                <p class="text-muted">Client Satisfaction</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center animate__animated animate__fadeIn">
+                <h2 class="fw-bold">How It Works</h2>
+                <p class="lead">Our platform makes influencer marketing simple and effective</p>
+                <hr class="mx-auto" style="width: 50px; height: 3px; background-color: var(--primary-color);">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header text-center border-0 bg-white pt-4">
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                            <i class="bi bi-person-badge fs-1 text-white"></i>
+                        </div>
+                        <h3 class="h5">For Influencers</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Create a professional profile</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Connect your social media accounts</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Browse and apply for campaigns</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Track your performance metrics</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Get paid for successful campaigns</li>
+                        </ul>
+                        <div class="d-grid gap-2 mb-2">
+                            <a href="{% url 'influencer_register' %}" class="btn btn-primary">Register as Influencer</a>
+                        </div>
+                        <div class="text-center mt-2">
+                            <small>Or register with:</small>
+                            <div class="d-flex justify-content-center gap-2 mt-1">
+                                <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-google"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header text-center border-0 bg-white pt-4">
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                            <i class="bi bi-building fs-1 text-white"></i>
+                        </div>
+                        <h3 class="h5">For Businesses</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Create your business profile</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Launch marketing campaigns</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Find the perfect influencers</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Track campaign performance</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Measure ROI with detailed analytics</li>
+                        </ul>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'business_register' %}" class="btn btn-primary">Register as Business</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header text-center border-0 bg-white pt-4">
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                            <i class="bi bi-gear fs-1 text-white"></i>
+                        </div>
+                        <h3 class="h5">Platform Features</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Verified social media metrics</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Secure payment processing</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Campaign performance tracking</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Detailed analytics dashboard</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Social media platform integration</li>
+                        </ul>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center animate__animated animate__fadeIn">
+                <h2 class="fw-bold">What Our Users Say</h2>
+                <p class="lead">Success stories from our community</p>
+                <hr class="mx-auto" style="width: 50px; height: 3px; background-color: var(--primary-color);">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80" alt="John Smith" class="rounded-circle mb-3" width="100" height="100">
+                        <h4>John Smith</h4>
+                        <p class="text-muted">Fashion Influencer</p>
+                        <div class="mb-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                        </div>
+                        <p class="fst-italic">"Influenza has transformed my career as an influencer. I've connected with amazing brands and increased my income by 200% in just 6 months!"</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80" alt="Sarah Johnson" class="rounded-circle mb-3" width="100" height="100">
+                        <h4>Sarah Johnson</h4>
+                        <p class="text-muted">Marketing Director</p>
+                        <div class="mb-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                        </div>
+                        <p class="fst-italic">"As a business, finding the right influencers was always challenging. Influenza's platform made it simple to find perfect matches for our brand and track ROI effectively."</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80" alt="Michael Chen" class="rounded-circle mb-3" width="100" height="100">
+                        <h4>Michael Chen</h4>
+                        <p class="text-muted">Tech Influencer</p>
+                        <div class="mb-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-half text-warning"></i>
+                        </div>
+                        <p class="fst-italic">"The analytics dashboard is incredible! I can see exactly how my content performs and optimize my strategy. The payment system is also seamless and reliable."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section with Images -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center animate__animated animate__fadeIn">
+                <h2 class="fw-bold">Our Platform in Action</h2>
+                <p class="lead">See how Influenza transforms influencer marketing</p>
+                <hr class="mx-auto" style="width: 50px; height: 3px; background-color: var(--primary-color);">
+            </div>
+        </div>
+        
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6 mb-4 mb-lg-0 animate__animated animate__fadeInLeft">
+                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Campaign Creation" class="img-fluid rounded shadow">
+            </div>
+            <div class="col-lg-6 animate__animated animate__fadeInRight">
+                <h3>Create Powerful Campaigns</h3>
+                <p>Businesses can easily set up marketing campaigns with detailed requirements, target audience specifications, and performance goals. Our intuitive interface makes campaign creation simple and effective.</p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Define campaign objectives</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Set budget and timeline</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Specify target audience demographics</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0 animate__animated animate__fadeInRight">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Influencer Matching" class="img-fluid rounded shadow">
+            </div>
+            <div class="col-lg-6 order-lg-1 animate__animated animate__fadeInLeft">
+                <h3>Smart Influencer Matching</h3>
+                <p>Our AI-powered algorithm matches businesses with the perfect influencers based on audience demographics, engagement rates, and content quality. This ensures authentic partnerships that deliver results.</p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> AI-based matching technology</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Verified influencer metrics</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Audience alignment analysis</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0 animate__animated animate__fadeInLeft">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Performance Analytics" class="img-fluid rounded shadow">
+            </div>
+            <div class="col-lg-6 animate__animated animate__fadeInRight">
+                <h3>Comprehensive Analytics</h3>
+                <p>Track campaign performance in real-time with our detailed analytics dashboard. Monitor engagement, reach, conversions, and ROI to optimize your marketing strategy and maximize results.</p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Real-time performance tracking</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Conversion and ROI measurement</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Detailed engagement metrics</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section with Parallax -->
+<section class="py-5 text-white" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center; background-size: cover; background-attachment: fixed;">
+    <div class="container py-5">
+        <div class="row justify-content-center py-5">
+            <div class="col-lg-8 text-center animate__animated animate__fadeIn">
+                <h2 class="display-5 fw-bold mb-4">Ready to Transform Your Marketing?</h2>
+                <p class="lead mb-5">Join thousands of businesses and influencers already succeeding on our platform.</p>
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    <a href="{% url 'register_choice' %}" class="btn btn-primary btn-lg px-5 py-3 animate__animated animate__pulse animate__infinite animate__slower">Get Started Today</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-5 py-3">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Enhanced Footer -->
+<footer class="bg-dark text-white py-5 mt-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <h5 class="mb-4">Influenza</h5>
+                <p>The leading platform connecting businesses with influencers for authentic marketing campaigns that drive real results.</p>
+                <div class="d-flex gap-3 mt-4">
+                    <a href="#" class="text-white"><i class="bi bi-facebook fs-4"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-twitter fs-4"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-instagram fs-4"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-linkedin fs-4"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h5 class="mb-4">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{% url 'home' %}" class="text-white text-decoration-none">Home</a></li>
+                    <li class="mb-2"><a href="#features" class="text-white text-decoration-none">Features</a></li>
+                    <li class="mb-2"><a href="{% url 'login' %}" class="text-white text-decoration-none">Login</a></li>
+                    <li class="mb-2"><a href="{% url 'register_choice' %}" class="text-white text-decoration-none">Register</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h5 class="mb-4">Resources</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Blog</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Case Studies</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Help Center</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Guides</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <h5 class="mb-4">Subscribe to Our Newsletter</h5>
+                <p>Get the latest updates and news directly to your inbox.</p>
+                <form class="mt-3">
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Your Email" aria-label="Your Email">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <hr class="my-4 bg-light">
+        <div class="row">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <p class="mb-0">&copy; {% now "Y" %} Influenza Marketing Platform. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="#" class="text-white text-decoration-none me-3">Privacy Policy</a>
+                <a href="#" class="text-white text-decoration-none me-3">Terms of Service</a>
+                <a href="#" class="text-white text-decoration-none">Contact Us</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Add JavaScript for animations and counters -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Simple counter animation
+        const counters = document.querySelectorAll('[data-count]');
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            const duration = 2000; // 2 seconds
+            const step = target / (duration / 16); // 60fps
+            let current = 0;
+            
+            const updateCounter = () => {
+                current += step;
+                if (current < target) {
+                    counter.textContent = Math.ceil(current) + '+';
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counter.textContent = target + '+';
+                }
+            };
+            
+            // Start counter when element is in viewport
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        updateCounter();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            observer.observe(counter);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Edit Business Profile - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-md-8">
+        <div class="card shadow-lg animate__animated animate__fadeIn animate__faster">
+            <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #6cb2eb, #2a7fba); border-radius: 8px 8px 0 0;">
+                <h2 class="h4 text-white mb-0"><i class="bi bi-building-gear me-2"></i>Edit Your Business Profile</h2>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data" class="animate__animated animate__fadeInUp animate__delay-1s">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_company_name" class="form-label fw-bold">Company Name</label>
+                            <input type="text" name="company_name" value="{{ form.instance.company_name }}" class="form-control" id="id_company_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_industry" class="form-label fw-bold">Industry</label>
+                            <input type="text" name="industry" value="{{ form.instance.industry }}" class="form-control" id="id_industry">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_description" class="form-label fw-bold">Company Description</label>
+                        <textarea name="description" class="form-control" id="id_description" rows="4">{{ form.instance.description }}</textarea>
+                        <div class="form-text">Describe your company and what makes it unique.</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_company_logo" class="form-label fw-bold">Company Logo</label>
+                        {% if form.instance.company_logo %}
+                        <div class="mb-2">
+                            <img src="{{ form.instance.company_logo.url }}" alt="Current company logo" class="img-thumbnail" style="max-width: 150px;">
+                            <p class="form-text">Current company logo</p>
+                        </div>
+                        {% endif %}
+                        <input type="file" name="company_logo" class="form-control" id="id_company_logo">
+                        <div class="form-text">Upload a new company logo (optional).</div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_company_size" class="form-label fw-bold">Company Size</label>
+                            <input type="text" name="company_size" value="{{ form.instance.company_size }}" class="form-control" id="id_company_size">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_year_established" class="form-label fw-bold">Year Established</label>
+                            <input type="number" name="year_established" value="{{ form.instance.year_established }}" class="form-control" id="id_year_established">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_website" class="form-label fw-bold">Website</label>
+                        <input type="url" name="website" value="{{ form.instance.website }}" class="form-control" id="id_website">
+                    </div>
+                    
+                    <h4 class="h5 mb-3 mt-5">Contact Information</h4>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_contact_person" class="form-label fw-bold">Contact Person</label>
+                            <input type="text" name="contact_person" value="{{ form.instance.contact_person }}" class="form-control" id="id_contact_person">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_contact_email" class="form-label fw-bold">Contact Email</label>
+                            <input type="email" name="contact_email" value="{{ form.instance.contact_email }}" class="form-control" id="id_contact_email">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_contact_phone" class="form-label fw-bold">Contact Phone</label>
+                            <input type="text" name="contact_phone" value="{{ form.instance.contact_phone }}" class="form-control" id="id_contact_phone">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_business_type" class="form-label fw-bold">Business Type</label>
+                            <input type="text" name="business_type" value="{{ form.instance.business_type }}" class="form-control" id="id_business_type">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_address" class="form-label fw-bold">Address</label>
+                        <textarea name="address" class="form-control" id="id_address" rows="3">{{ form.instance.address }}</textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg" style="background: linear-gradient(135deg, #6cb2eb, #2a7fba); border: none;">
+                            <i class="bi bi-save me-2"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

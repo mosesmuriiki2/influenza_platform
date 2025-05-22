@@ -1,0 +1,133 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}{{ campaign.title }} - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Campaign Details</h1>
+                <a href="{% url 'campaigns' %}" class="btn btn-outline-primary"><i class="bi bi-arrow-left me-2"></i>Back to Campaigns</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="h4 mb-0">{{ campaign.title }}</h2>
+                        <span class="badge bg-{{ campaign.status|yesno:'success,primary,warning,danger' }}">{{ campaign.get_status_display }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Posted by: {{ campaign.business.company_name }}</p>
+                    
+                    <h5 class="mb-3">Description</h5>
+                    <p>{{ campaign.description }}</p>
+                    
+                    <h5 class="mb-3">Requirements</h5>
+                    <p>{{ campaign.requirements }}</p>
+                    
+                    {% if campaign.target_audience %}
+                    <h5 class="mb-3">Target Audience</h5>
+                    <p>{{ campaign.target_audience }}</p>
+                    {% endif %}
+                    
+                    {% if campaign.target_metrics %}
+                    <h5 class="mb-3">Target Metrics</h5>
+                    <p>{{ campaign.target_metrics }}</p>
+                    {% endif %}
+                    
+                    <h5 class="mb-3">Campaign Timeline</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Start Date:</strong> {{ campaign.start_date }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>End Date:</strong> {{ campaign.end_date }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h3 class="h5 mb-0">Campaign Details</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Budget</span>
+                            <span class="badge bg-primary rounded-pill">${{ campaign.budget }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Target Platforms</span>
+                            <span>{{ campaign.target_platforms }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Created</span>
+                            <span>{{ campaign.created_at|date:"M d, Y" }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            {% if user.user_type == 'influencer' %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h3 class="h5 mb-0">Apply for Campaign</h3>
+                </div>
+                <div class="card-body">
+                    <p>Interested in this campaign? Submit your application now!</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'apply_campaign' campaign.id %}" class="btn btn-primary">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="h5 mb-0">Share Campaign</h3>
+                </div>
+                <div class="card-body">
+                    <p>Share this campaign with your network:</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="btn btn-outline-primary">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text=Check out this campaign: {{ campaign.title }}" target="_blank" class="btn btn-outline-info">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ campaign.title }}" target="_blank" class="btn btn-outline-secondary">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <button class="btn btn-outline-dark" onclick="navigator.clipboard.writeText('{{ request.build_absolute_uri }}')">
+                            <i class="bi bi-link-45deg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if user.user_type == 'business' and campaign.business.user == user %}
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="h5 mb-0">Manage Campaign</h3>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'edit_campaign' campaign.id %}" class="btn btn-primary">Edit Campaign</a>
+                        <a href="{% url 'campaign_applications' campaign.id %}" class="btn btn-outline-primary">View Applications</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

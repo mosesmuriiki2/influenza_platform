@@ -1,0 +1,105 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Influencer Dashboard - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3">Welcome, {{ profile.full_name }}</h1>
+            <a href="{% url 'influencer_profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Profile Overview</h2>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="{{ profile.full_name }}" class="rounded-circle img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto" style="width: 120px; height: 120px;">
+                        <span class="text-white h1">{{ profile.full_name|first }}</span>
+                    </div>
+                    {% endif %}
+                    <h3 class="h5 mt-3">{{ profile.full_name }}</h3>
+                    <p class="text-muted">{{ profile.categories }}</p>
+                </div>
+                <div class="mb-3">
+                    <h4 class="h6">Social Media</h4>
+                    <ul class="list-group list-group-flush">
+                        {% if profile.instagram_handle %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Instagram</span>
+                            <span class="badge bg-primary rounded-pill">{{ profile.instagram_followers }}</span>
+                        </li>
+                        {% endif %}
+                        {% if profile.twitter_handle %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Twitter</span>
+                            <span class="badge bg-primary rounded-pill">{{ profile.twitter_followers }}</span>
+                        </li>
+                        {% endif %}
+                        {% if profile.tiktok_handle %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>TikTok</span>
+                            <span class="badge bg-primary rounded-pill">{{ profile.tiktok_followers }}</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Available Campaigns</h2>
+                <a href="{% url 'campaigns' %}" class="btn btn-sm btn-primary">View All</a>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <p class="mb-0">Browse available campaigns to find opportunities that match your profile.</p>
+                </div>
+                <!-- Campaign list will be displayed here when available -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h2 class="h5 mb-0">My Applications</h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <p class="mb-0">You haven't applied to any campaigns yet.</p>
+                </div>
+                <!-- Applications list will be displayed here when available -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Recent Payments</h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <p class="mb-0">No payment history available.</p>
+                </div>
+                <!-- Payment history will be displayed here when available -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

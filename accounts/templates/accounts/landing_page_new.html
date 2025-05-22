@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influenza Marketing Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e57d4;
+            --secondary-color: #8c52ff;
+            --accent-color: #ff6b6b;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+        
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            padding: 200px 0;
+            color: white;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.5));
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section {
+            padding: 100px 0;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--gradient);
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .testimonial-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            margin-top: 50px;
+        }
+        
+        .testimonial-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .stats-section {
+            background: var(--gradient);
+            color: white;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .how-it-works-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .contact-form {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .contact-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+        
+        .btn-gradient {
+            background: var(--gradient);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-left: 15px;
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        .brands-section {
+            background-color: var(--light-color);
+        }
+        
+        .brand-logo {
+            height: 60px;
+            object-fit: contain;
+            filter: grayscale(100%);
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+        
+        .brand-logo:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+        
+        .cta-section {
+            background: url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            color: white;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(78,87,212,0.9), rgba(140,82,255,0.9));
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 80px 0 30px;
+        }
+        
+        .footer-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--gradient);
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background: var(--gradient);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            margin-top: 50px;
+        }
+        
+        /* Animation classes */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .fade-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .fade-right {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.8s ease;
+        }
+        
+        .fade-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .fade-left {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .fade-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-7 animate__animated animate__fadeInLeft">
+                    <h1 class="display-3 fw-bold mb-4">Revolutionize Your Marketing with Influenza</h1>
+                    <p class="lead mb-5">Connect with top influencers, create powerful campaigns, and boost your brand's visibility with our all-in-one influencer marketing platform.</p>
+                    <div>
+                        <a href="#features" class="btn btn-gradient">Explore Features</a>
+                        <a href="#contact" class="btn btn-outline">Contact Us</a>
+                    </div>
+                </div>
+                <div class="col-lg-5 d-none d-lg-block animate__animated animate__fadeInRight">
+                    <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1267&q=80" alt="Influencer Marketing" class="img-fluid rounded-3 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brands Section -->
+    <section class="brands-section py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 text-center mb-4">
+                    <p class="text-muted">TRUSTED BY LEADING BRANDS</p>
+                </div>
+                <div class="col-md-10">
+                    <div class="row align-items-center justify-content-between">
+                        <div class="col-4 col-md-2 mb-4 mb-md-0">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png" alt="Brand Logo" class="img-fluid brand-logo">
+                        </div>
+                        <div class="col-4 col-md-2 mb-4 mb-md-0">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1024px-Amazon_logo.svg.png" alt="Brand Logo" class="img-fluid brand-logo">
+                        </div>
+                        <div class="col-4 col-md-2 mb-4 mb-md-0">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1920px-Netflix_2015_logo.svg.png" alt="Brand Logo" class="img-fluid brand-logo">
+                        </div>
+                        <div class="col-4 col-md-2 mb-4 mb-md-0">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png" alt="Brand Logo" class="img-fluid brand-logo">
+                        </div>
+                        <div class="col-4 col-md-2 mb-4 mb-md-0">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/1200px-Spotify_logo_with_text.svg.png" alt="Brand Logo" class="img-fluid brand-logo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-6 text-center">
+                    <h2 class="section-title text-center">Powerful Features</h2>
+                    <p class="lead">Everything you need to run successful influencer marketing campaigns</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4 fade-up">
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h3 class="h4 mb-3">Advanced Analytics</h3>
+                        <p>Track campaign performance with real-time analytics and comprehensive reporting dashboards.</p>
+                        <ul class="mt-3">
+                            <li>ROI tracking</li>
+                            <li>Engagement metrics</li>
+                            <li>Audience insights</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-up" style="transition-delay: 0.2s;">
+                    <div class="feature-card">
+                        <i class="fas fa-users feature-icon"></i>
+                        <h3 class="h4 mb-3">Influencer Network</h3>
+                        <p>Access our curated network of verified influencers across various niches and platforms.</p>
+                        <ul class="mt-3">
+                            <li>Verified profiles</li>
+                            <li>Detailed metrics</li>
+                            <li>Performance history</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-up" style="transition-delay: 0.4s;">
+                    <div class="feature-card">
+                        <i class="fas fa-cogs feature-icon"></i>
+                        <h3 class="h4 mb-3">Campaign Automation</h3>
+                        <p>Automate your influencer marketing campaigns from outreach to payment processing.</p>
+                        <ul class="mt-3">
+                            <li>Automated workflows</li>
+                            <li>Content approval</li>
+                            <li>Payment processing</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-up">
+                    <div class="feature-card">
+                        <i class="fas fa-bullseye feature-icon"></i>
+                        <h3 class="h4 mb-3">Targeted Matching</h3>
+                        <p>Find the perfect influencers for your brand using our AI-powered matching algorithm.</p>
+                        <ul class="mt-3">
+                            <li>Audience alignment</li>
+                            <li>Brand affinity</li>
+                            <li>Performance prediction</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-up" style="transition-delay: 0.2s;">
+                    <div class="feature-card">
+                        <i class="fas fa-comments feature-icon"></i>
+                        <h3 class="h4 mb-3">Messaging System</h3>
+                        <p>Communicate with influencers directly through our integrated messaging platform.</p>
+                        <ul class="mt-3">
+                            <li>Real-time chat</li>
+                            <li>File sharing</li>
+                            <li>Message history</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-up" style="transition-delay: 0.4s;">
+                    <div class="feature-card">
+                        <i class="fas fa-file-contract feature-icon"></i>
+                        <h3 class="h4 mb-3">Contract Management</h3>
+                        <p>Create, send, and manage influencer contracts with our built-in contract tools.</p>
+                        <ul class="mt-3">
+                            <li>Contract templates</li>
+                            <li>Digital signatures</li>
+                            <li>Payment tracking</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mb-4 mb-md-0 fade-up">
+                    <div class="stat-card">
+                        <div class="stat-number">10K+</div>
+                        <p class="mb-0">Verified Influencers</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0 fade-up" style="transition-delay: 0.2s;">
+                    <div class="stat-card">
+                        <div class="stat-number">500+</div>
+                        <p class="mb-0">Brands Using Platform</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0 fade-up" style="transition-delay: 0.4s;">
+                    <div class="stat-card">
+                        <div class="stat-number">2.5M+</div>
+                        <p class="mb-0">Campaign Reach</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0 fade-up" style="transition-delay: 0.6s;">
+                    <div class="stat-card">
+                        <div class="stat-number">98%</div>
+                        <p class="mb-0">Client Satisfaction</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-6 text-center">
+                    <h2 class="section-title text-center">How It Works</h2>
+                    <p class="lead">Get started with Influenza in just a few simple steps</p>
+                </div>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0 fade-right">
+                    <div class="how-it-works-step">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h3 class="h4">Create Your Account</h3>
+                            <p>Sign up and create your brand profile with all the necessary information.</p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h3 class="h4">Define Your Campaign</h3>
+                            <p>Set your campaign goals, budget, and requirements for influencers.</p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h3 class="h4">Connect with Influencers</h3>
+                            <p>Browse our network and connect with influencers that match your criteria.</p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h3 class="h4">Launch & Monitor</h3>
+                            <p>Launch your campaign and track performance in real-time through our dashboard.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 fade-left">
+                    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="How It Works" class="img-fluid rounded-3 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section bg-light">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-6 text-center">
+                    <h2 class="section-title text-center">What Our Clients Say</h2>
+                    <p class="lead">Success stories from brands using our platform</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-5 fade-up">
+                    <div class="testimonial-card text-center">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client 1" class="testimonial-img">
+                        <div class="mt-5 pt-3">
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="mb-3">"Influenza helped us increase our sales by 200% in just three months! The platform is intuitive and the team is incredibly supportive."</p>
+                            <h4 class="h5 mb-1">Sarah Johnson</h4>
+                            <p class="text-muted">Marketing Director, TechGrow</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5 fade-up" style="transition-delay: 0.2s;">
+                    <div class="testimonial-card text-center">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client 2" class="testimonial-img">
+                        <div class="mt-5 pt-3">
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="mb-3">"The analytics and reporting features are exceptional. We can track every aspect of our campaigns and optimize in real-time."</p>
+                            <h4 class="h5 mb-1">David Chen</h4>
+                            <p class="text-muted">CEO, FitLife Brands</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5 fade-up" style="transition-delay: 0.4s;">
+                    <div class="testimonial-card text-center">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Client 3" class="testimonial-img">
+                        <div class="mt-5 pt-3">
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="mb-3">"Finding the right influencers used to be a challenge, but with Influenza's matching algorithm, we've found perfect partners for our brand."</p>
+                            <h4 class="h5 mb-1">Emily Rodriguez</h4>
+                            <p class="text-muted">Brand Manager, BeautyGlow</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section section">
+        <div class="container cta-content text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="display-4 fw-bold mb-4">Ready to Transform Your Marketing?</h2>
+                    <p class="lead mb-5">Join thousands of successful brands using Influenza to power their influencer marketing campaigns.</p>
+                    <a href="{% url 'register_choice' %}" class="btn btn-light btn-lg px-5 py-3">Get Started Today</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-6 text-center">
+                    <h2 class="section-title text-center">Contact Us</h2>
+                    <p class="lead">Have questions? We're here to help!</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-5 mb-5 mb-lg-0 fade-right">
+                    <div class="contact-info">
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="h5">Our Location</h4>
+                                <p>123 Marketing Street, Digital City, 10001</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
