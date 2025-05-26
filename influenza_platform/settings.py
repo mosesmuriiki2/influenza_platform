@@ -87,11 +87,11 @@ WSGI_APPLICATION = 'influenza_platform.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'railway',
-        'USER': 'root',
-        'PASSWORD': 'BfymVBWZLibVYnVxDhxAHODLEdYtndIC',
-        'HOST': 'switchback.proxy.rlwy.net',
-        'PORT': '33114',
+        'NAME': 'influenzadb_pockettorn',
+        'USER': 'influenzadb_pockettorn',
+        'PASSWORD': 'e62b5361b11e626d6a758fdc7d48ea369347794c',
+        'HOST': 'hh8-y.h.filess.io',
+        'PORT': '3307',
     }
 }
 
