@@ -1,6 +1,128 @@
 {% extends 'accounts/base.html' %}
 
-{% block title %}Create Campaign - Influenza Marketing Platform{% endblock %}
+{% block title %}Create Campaign - Influenza Marketing Platform<script>
+    // Function to preview uploaded images
+    function previewImage(input) {
+        const previewContainer = input.closest('.image-item').querySelector('.image-preview-container');
+        previewContainer.innerHTML = '';
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'image-preview';
+                previewContainer.appendChild(img);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    // Function to add more image upload fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const addMoreBtn = document.getElementById('add-more-images');
+        const container = document.getElementById('image-upload-container');
+        let imageCount = 1;
+        
+        addMoreBtn.addEventListener('click', function() {
+            imageCount++;
+            
+            const newItem = document.createElement('div');
+            newItem.className = 'image-item';
+            newItem.innerHTML = `
+                <div class="mb-3">
+                    <label for="id_image_${imageCount}" class="form-label">Image</label>
+                    <input type="file" name="images[]" class="form-control" id="id_image_${imageCount}" accept="image/*" onchange="previewImage(this)">
+                </div>
+                <div class="mb-3">
+                    <label for="id_caption_${imageCount}" class="form-label">Caption (optional)</label>
+                    <input type="text" name="captions[]" class="form-control" id="id_caption_${imageCount}">
+                </div>
+                <div class="image-preview-container"></div>
+                <button type="button" class="btn btn-sm btn-outline-danger remove-image">Remove</button>
+            `;
+            
+            container.appendChild(newItem);
+            
+            // Add event listener to remove button
+            newItem.querySelector('.remove-image').addEventListener('click', function() {
+                container.removeChild(newItem);
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .image-preview {
+        max-width: 100%;
+        max-height: 150px;
+        margin-top: 10px;
+    }
+    .image-item {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+</style>
+<script>
+    // Function to preview uploaded images
+    function previewImage(input) {
+        const previewContainer = input.closest('.image-item').querySelector('.image-preview-container');
+        previewContainer.innerHTML = '';
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'image-preview';
+                previewContainer.appendChild(img);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    // Function to add more image upload fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const addMoreBtn = document.getElementById('add-more-images');
+        const container = document.getElementById('image-upload-container');
+        let imageCount = 1;
+        
+        addMoreBtn.addEventListener('click', function() {
+            imageCount++;
+            
+            const newItem = document.createElement('div');
+            newItem.className = 'image-item';
+            newItem.innerHTML = `
+                <div class="mb-3">
+                    <label for="id_image_${imageCount}" class="form-label">Image</label>
+                    <input type="file" name="images[]" class="form-control" id="id_image_${imageCount}" accept="image/*" onchange="previewImage(this)">
+                </div>
+                <div class="mb-3">
+                    <label for="id_caption_${imageCount}" class="form-label">Caption (optional)</label>
+                    <input type="text" name="captions[]" class="form-control" id="id_caption_${imageCount}">
+                </div>
+                <div class="image-preview-container"></div>
+                <button type="button" class="btn btn-sm btn-outline-danger remove-image">Remove</button>
+            `;
+            
+            container.appendChild(newItem);
+            
+            // Add event listener to remove button
+            newItem.querySelector('.remove-image').addEventListener('click', function() {
+                container.removeChild(newItem);
+            });
+        });
+    });
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -17,7 +139,7 @@
         <div class="col-md-10">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <form method="post">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         
                         <h5 class="mb-3">Campaign Details</h5>
@@ -74,6 +196,26 @@
                             <div class="form-text">Describe your expected engagement metrics (views, likes, comments, etc.)</div>
                         </div>
                         
+                        <h5 class="mb-3">Campaign Images</h5>
+                        <div class="mb-4" id="image-upload-container">
+                            <div class="image-item">
+                                <div class="mb-3">
+                                    <label for="id_image_1" class="form-label">Image</label>
+                                    <input type="file" name="images[]" class="form-control" id="id_image_1" accept="image/*" onchange="previewImage(this)">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="id_caption_1" class="form-label">Caption (optional)</label>
+                                    <input type="text" name="captions[]" class="form-control" id="id_caption_1">
+                                </div>
+                                <div class="image-preview-container"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-outline-secondary" id="add-more-images">
+                                <i class="bi bi-plus-circle me-2"></i>Add Another Image
+                            </button>
+                        </div>
+                        
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                             <button type="submit" class="btn btn-primary">Create Campaign</button>
                         </div>
@@ -83,4 +225,57 @@
         </div>
     </div>
 </div>
+<script>
+    // Function to preview uploaded images
+    function previewImage(input) {
+        const previewContainer = input.closest('.image-item').querySelector('.image-preview-container');
+        previewContainer.innerHTML = '';
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'image-preview';
+                previewContainer.appendChild(img);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    // Function to add more image upload fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const addMoreBtn = document.getElementById('add-more-images');
+        const container = document.getElementById('image-upload-container');
+        let imageCount = 1;
+        
+        addMoreBtn.addEventListener('click', function() {
+            imageCount++;
+            
+            const newItem = document.createElement('div');
+            newItem.className = 'image-item';
+            newItem.innerHTML = `
+                <div class="mb-3">
+                    <label for="id_image_${imageCount}" class="form-label">Image</label>
+                    <input type="file" name="images[]" class="form-control" id="id_image_${imageCount}" accept="image/*" onchange="previewImage(this)">
+                </div>
+                <div class="mb-3">
+                    <label for="id_caption_${imageCount}" class="form-label">Caption (optional)</label>
+                    <input type="text" name="captions[]" class="form-control" id="id_caption_${imageCount}">
+                </div>
+                <div class="image-preview-container"></div>
+                <button type="button" class="btn btn-sm btn-outline-danger remove-image">Remove</button>
+            `;
+            
+            container.appendChild(newItem);
+            
+            // Add event listener to remove button
+            newItem.querySelector('.remove-image').addEventListener('click', function() {
+                container.removeChild(newItem);
+            });
+        });
+    });
+</script>
 {% endblock %}

@@ -272,7 +272,8 @@
                                 <div>
                                     <h6 class="mb-1">{{ message.sender.full_name }}</h6>
                                     <p class="message-preview mb-1">{{ message.content }}</p>
-                                    <small class="text-muted">{{ message.created_at|naturaltime }}</small>
+                                    {% load humanize %}
+<small class="text-muted">{{ message.created_at|naturaltime }}</small>
                                 </div>
                                 <a href="{% url 'view_message' message.id %}" class="btn btn-sm btn-outline-primary">Reply</a>
                             </div>

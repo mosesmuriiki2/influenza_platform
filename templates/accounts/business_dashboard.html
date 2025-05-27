@@ -1,0 +1,111 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="h3 mb-4">Business Dashboard</h1>
+            
+            <!-- Campaign Stats Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Campaign Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body text-center">
+                                    <h3 class="card-title">{{ campaign_stats.active_campaigns }}</h3>
+                                    <p class="card-text">Active Campaigns</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body text-center">
+                                    <h3 class="card-title">{{ campaign_stats.total_influencers }}</h3>
+                                    <p class="card-text">Total Influencers</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body text-center">
+                                    <h3 class="card-title">{{ campaign_stats.completion_rate }}%</h3>
+                                    <p class="card-text">Completion Rate</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Campaigns List Section -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Your Campaigns</h5>
+                    <a href="{% url 'create_campaign' %}" class="btn btn-primary btn-sm">Create New Campaign</a>
+                </div>
+                <div class="card-body">
+                    {% if profile.campaigns.all %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Campaign</th>
+                                        <th>Status</th>
+                                        <th>Applications</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for campaign in profile.campaigns.all %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    {% if campaign.campaign_images.all.0 %}
+                                                        <img src="{{ campaign.campaign_images.all.0.image.url }}" 
+                                                             class="img-thumbnail me-3" 
+                                                             style="width: 60px; height: 60px; object-fit: cover;" 
+                                                             alt="{{ campaign.title }}">
+                                                    {% else %}
+                                                        <div class="img-thumbnail me-3 d-flex align-items-center justify-content-center" 
+                                                             style="width: 60px; height: 60px; background-color: #f8f9fa;">
+                                                            <i class="bi bi-image text-muted"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                    <div>
+                                                        <h6 class="mb-0">{{ campaign.title }}</h6>
+                                                        <small class="text-muted">{{ campaign.start_date|date:"M d" }} - {{ campaign.end_date|date:"M d, Y" }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{% if campaign.status == 'active' %}success{% elif campaign.status == 'draft' %}secondary{% elif campaign.status == 'completed' %}info{% else %}warning{% endif %}">
+                                                    {{ campaign.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>{{ campaign.applications.count }}</td>
+                                            <td>
+                                                <a href="{% url 'campaign_detail' campaign.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                                <a href="{% url 'edit_campaign' campaign.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted">You haven't created any campaigns yet.</p>
+                            <a href="{% url 'create_campaign' %}" class="btn btn-primary">Create Your First Campaign</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

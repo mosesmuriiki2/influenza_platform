@@ -1,6 +1,33 @@
 {% extends 'accounts/base.html' %}
+{% load static %}
 
 {% block title %}Compose Message - Influenza Marketing Platform{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+    .form-control:focus {
+        border-color: #4f5b93;
+        box-shadow: 0 0 0 0.25rem rgba(79, 91, 147, 0.25);
+    }
+    
+    #sendButton:hover {
+        transform: translateY(-2px);
+        transition: transform 0.2s ease;
+    }
+    
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        border: none;
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
@@ -26,22 +53,31 @@
                 <h2 class="h5 mb-0">{% if is_reply %}Reply to Message{% else %}Compose New Message{% endif %}</h2>
             </div>
             <div class="card-body">
-                <form method="post">
+                <form method="post" class="needs-validation" novalidate>
                     {% csrf_token %}
                     
-                    <div class="mb-3">
-                        <label for="id_recipient" class="form-label">To:</label>
+                    <div class="mb-4 animate__animated animate__fadeIn">
+                        <label for="id_recipient" class="form-label fw-bold">To:</label>
                         {{ form.recipient }}
+                        <div class="invalid-feedback">
+                            Please select a recipient.
+                        </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="id_subject" class="form-label">Subject:</label>
+                    <div class="mb-4 animate__animated animate__fadeIn animate__delay-1s">
+                        <label for="id_subject" class="form-label fw-bold">Subject:</label>
                         {{ form.subject }}
+                        <div class="invalid-feedback">
+                            Please enter a subject.
+                        </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="id_content" class="form-label">Message:</label>
+                    <div class="mb-4 animate__animated animate__fadeIn animate__delay-2s">
+                        <label for="id_content" class="form-label fw-bold">Message:</label>
                         {{ form.content }}
+                        <div class="invalid-feedback">
+                            Please enter your message.
+                        </div>
                     </div>
                     
                     {% if original_message %}
@@ -60,8 +96,11 @@
                     </div>
                     {% endif %}
                     
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill shadow-sm" id="sendButton">
+                            <span class="send-text">Send Message</span>
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        </button>
                     </div>
                 </form>
             </div>

@@ -160,17 +160,22 @@ def dashboard(request):
             # Get all influencers for the business to view
             influencers = InfluencerProfile.objects.all()
             
+            # Get campaigns created by this business
+            campaigns = profile.campaigns.all()
+            
             # Calculate campaign stats for business dashboard
             campaign_stats = {
                 'completion_rate': profile.get_campaign_completion_rate() if hasattr(profile, 'get_campaign_completion_rate') else 0,
                 'total_influencers': influencers.count(),
-                'active_campaigns': Campaign.objects.filter(business=profile, status='active').count() if 'Campaign' in globals() else 0
+                'active_campaigns': campaigns.filter(status='active').count(),
+                'total_campaigns': campaigns.count()
             }
             
             return render(request, 'accounts/business_dashboard.html', {
                 'profile': profile,
                 'campaign_stats': campaign_stats,
                 'influencers': influencers,
+                'campaigns': campaigns,
                 'unread_messages': get_unread_messages_count(user)
             })
         except BusinessProfile.DoesNotExist:
@@ -182,8 +187,8 @@ def dashboard(request):
 
 def get_unread_messages_count(user):
     """Helper function to get unread messages count"""
-    # Placeholder - implement actual message counting logic
-    return 0
+    from messaging.models import Message
+    return Message.objects.filter(recipient=user, read=False)
 
 class InfluencerProfileUpdateView(LoginRequiredMixin, UpdateView):
     """View for updating influencer profile"""
@@ -241,4 +246,7 @@ class InfluencerProfileDetailView(DetailView):
             total_followers += influencer.facebook_followers
             
         context['total_followers'] = total_followers
+        # Split categories string into a list for template usage
+        categories_str = influencer.categories if influencer.categories else ''
+        context['categories_list'] = [cat.strip() for cat in categories_str.split(',') if cat.strip()]
         return context
