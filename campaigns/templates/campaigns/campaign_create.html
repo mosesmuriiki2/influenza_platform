@@ -1,10 +1,127 @@
 {% extends 'accounts/base.html' %}
 
-{% block title %}Create Campaign - Influenza Marketing Platform{% endblock %}
+{% block title %}Create Campaign - Influenza Marketing Platform<script>
+    // Function to preview uploaded images
+    function previewImage(input) {
+        const previewContainer = input.closest('.image-item').querySelector('.image-preview-container');
+        previewContainer.innerHTML = '';
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'image-preview';
+                previewContainer.appendChild(img);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Function to add more image upload fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const addMoreBtn = document.getElementById('add-more-images');
+        const container = document.getElementById('image-upload-container');
+        let imageCount = 1;
+
+        addMoreBtn.addEventListener('click', function() {
+            imageCount++;
+
+            const newItem = document.createElement('div');
+            newItem.className = 'image-item';
+            newItem.innerHTML = `
+                <div class="mb-3">
+                    <label for="id_image_${imageCount}" class="form-label">Image</label>
+                    <input type="file" name="images[]" class="form-control" id="id_image_${imageCount}" accept="image/*" onchange="previewImage(this)">
+                </div>
+                <div class="mb-3">
+                    <label for="id_caption_${imageCount}" class="form-label">Caption (optional)</label>
+                    <input type="text" name="captions[]" class="form-control" id="id_caption_${imageCount}">
+                </div>
+                <div class="image-preview-container"></div>
+                <button type="button" class="btn btn-sm btn-outline-danger remove-image">Remove</button>
+            `;
+
+            container.appendChild(newItem);
+
+            // Add event listener to remove button
+            newItem.querySelector('.remove-image').addEventListener('click', function() {
+                container.removeChild(newItem);
+            });
+        });
+    });
+</script>
+{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'campaigns/modern_campaign_forms.css' %}">
+<style>
+    .image-preview {
+        max-width: 100%;
+        max-height: 150px;
+        margin-top: 10px;
+    }
+    .image-item {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+</style>
+<script>
+    // Function to preview uploaded images
+    function previewImage(input) {
+        const previewContainer = input.closest('.image-item').querySelector('.image-preview-container');
+        previewContainer.innerHTML = '';
 
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'image-preview';
+                previewContainer.appendChild(img);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Function to add more image upload fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const addMoreBtn = document.getElementById('add-more-images');
+        const container = document.getElementById('image-upload-container');
+        let imageCount = 1;
+
+        addMoreBtn.addEventListener('click', function() {
+            imageCount++;
+
+            const newItem = document.createElement('div');
+            newItem.className = 'image-item';
+            newItem.innerHTML = `
+                <div class="mb-3">
+                    <label for="id_image_${imageCount}" class="form-label">Image</label>
+                    <input type="file" name="images[]" class="form-control" id="id_image_${imageCount}" accept="image/*" onchange="previewImage(this)">
+                </div>
+                <div class="mb-3">
+                    <label for="id_caption_${imageCount}" class="form-label">Caption (optional)</label>
+                    <input type="text" name="captions[]" class="form-control" id="id_caption_${imageCount}">
+                </div>
+                <div class="image-preview-container"></div>
+                <button type="button" class="btn btn-sm btn-outline-danger remove-image">Remove</button>
+            `;
+
+            container.appendChild(newItem);
+
+            // Add event listener to remove button
+            newItem.querySelector('.remove-image').addEventListener('click', function() {
+                container.removeChild(newItem);
+            });
+        });
+    });
+</script>
 {% endblock %}
 
 {% block content %}
@@ -20,12 +137,12 @@
 
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <div class="card">
-                <div class="card-body p-4">
-                    <form method="post" enctype="multipart/form-data" id="campaign-form">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         
-                        <h5 class="section-title">Campaign Details</h5>
+                        <h5 class="mb-3">Campaign Details</h5>
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3">
                                 <label for="id_title" class="form-label">Campaign Title</label>
@@ -50,10 +167,7 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="id_budget" class="form-label">Budget ($)</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">$</span>
-                                    <input type="number" name="budget" class="form-control" id="id_budget" step="0.01" required>
-                                </div>
+                                <input type="number" name="budget" class="form-control" id="id_budget" step="0.01" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="id_target_platforms" class="form-label">Target Platforms</label>
@@ -61,7 +175,7 @@
                             </div>
                         </div>
                         
-                        <h5 class="section-title">Campaign Content</h5>
+                        <h5 class="mb-3">Campaign Content</h5>
                         <div class="mb-3">
                             <label for="id_description" class="form-label">Description</label>
                             <textarea name="description" class="form-control" id="id_description" rows="4" required></textarea>
@@ -81,8 +195,8 @@
                             <textarea name="target_metrics" class="form-control" id="id_target_metrics" rows="3"></textarea>
                             <div class="form-text">Describe your expected engagement metrics (views, likes, comments, etc.)</div>
                         </div>
-                        
-                        <h5 class="section-title">Campaign Images</h5>
+
+                        <h5 class="mb-3">Campaign Images</h5>
                         <div class="mb-4" id="image-upload-container">
                             <div class="image-item">
                                 <div class="mb-3">
@@ -101,11 +215,9 @@
                                 <i class="bi bi-plus-circle me-2"></i>Add Another Image
                             </button>
                         </div>
-                        
+
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <button type="submit" class="btn btn-primary px-4 py-2">
-                                <i class="bi bi-check-circle me-2"></i>Create Campaign
-                            </button>
+                            <button type="submit" class="btn btn-primary">Create Campaign</button>
                         </div>
                     </form>
                 </div>
@@ -118,80 +230,33 @@
     function previewImage(input) {
         const previewContainer = input.closest('.image-item').querySelector('.image-preview-container');
         previewContainer.innerHTML = '';
-        
+
         if (input.files && input.files[0]) {
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
                 const img = document.createElement('img');
                 img.src = e.target.result;
                 img.className = 'image-preview';
                 previewContainer.appendChild(img);
-                
-                // Add fade-in animation
-                img.style.opacity = '0';
-                setTimeout(() => {
-                    img.style.transition = 'opacity 0.5s ease';
-                    img.style.opacity = '1';
-                }, 50);
             }
-            
+
             reader.readAsDataURL(input.files[0]);
         }
     }
-    
+
     // Function to add more image upload fields
     document.addEventListener('DOMContentLoaded', function() {
         const addMoreBtn = document.getElementById('add-more-images');
         const container = document.getElementById('image-upload-container');
         let imageCount = 1;
-        
-        // Add smooth scrolling to form sections
-        document.querySelectorAll('.section-title').forEach(title => {
-            title.addEventListener('click', function() {
-                const nextSection = this.nextElementSibling;
-                window.scrollTo({
-                    top: nextSection.offsetTop - 100,
-                    behavior: 'smooth'
-                });
-            });
-        });
-        
-        // Form validation feedback
-        const form = document.getElementById('campaign-form');
-        form.addEventListener('submit', function(e) {
-            if (!form.checkValidity()) {
-                e.preventDefault();
-                // Add shake animation to invalid fields
-                document.querySelectorAll(':invalid').forEach(field => {
-                    field.classList.add('is-invalid');
-                    field.style.animation = 'shake 0.5s';
-                    setTimeout(() => {
-                        field.style.animation = '';
-                    }, 500);
-                });
-            }
-        });
-        
-        // Remove validation styling when field is corrected
-        document.querySelectorAll('input, textarea, select').forEach(field => {
-            field.addEventListener('input', function() {
-                if (this.checkValidity()) {
-                    this.classList.remove('is-invalid');
-                    this.classList.add('is-valid');
-                }
-            });
-        });
-        
+
         addMoreBtn.addEventListener('click', function() {
             imageCount++;
-            
+
             const newItem = document.createElement('div');
             newItem.className = 'image-item';
             newItem.innerHTML = `
-                <button type="button" class="btn btn-sm btn-outline-danger remove-image">
-                    <i class="bi bi-x"></i>
-                </button>
                 <div class="mb-3">
                     <label for="id_image_${imageCount}" class="form-label">Image</label>
                     <input type="file" name="images[]" class="form-control" id="id_image_${imageCount}" accept="image/*" onchange="previewImage(this)">
@@ -201,35 +266,16 @@
                     <input type="text" name="captions[]" class="form-control" id="id_caption_${imageCount}">
                 </div>
                 <div class="image-preview-container"></div>
+                <button type="button" class="btn btn-sm btn-outline-danger remove-image">Remove</button>
             `;
-            
+
             container.appendChild(newItem);
-            
+
             // Add event listener to remove button
             newItem.querySelector('.remove-image').addEventListener('click', function() {
-                newItem.style.animation = 'fadeOut 0.3s forwards';
-                setTimeout(() => {
-                    container.removeChild(newItem);
-                }, 300);
+                container.removeChild(newItem);
             });
         });
     });
 </script>
-<style>
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        20%, 60% { transform: translateX(-5px); }
-        40%, 80% { transform: translateX(5px); }
-    }
-    @keyframes fadeOut {
-        from { opacity: 1; transform: translateY(0); }
-        to { opacity: 0; transform: translateY(20px); }
-    }
-    .is-invalid {
-        border-color: #dc3545;
-    }
-    .is-valid {
-        border-color: #28a745;
-    }
-</style>
 {% endblock %}

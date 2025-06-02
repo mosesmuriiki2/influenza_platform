@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from accounts.models import InfluencerProfile
-from .models import Campaign, CampaignApplication
+from .models import Campaign
 
 class CampaignForm(forms.ModelForm):
     """
@@ -29,18 +29,26 @@ class CampaignForm(forms.ModelForm):
 
         return cleaned_data
 
-class CampaignApplicationForm(forms.ModelForm):
+class CampaignApplicationForm(forms.Form):
     """
     Form for influencers to apply to campaigns
     """
-    portfolio_link = forms.URLField(
-        required=False,
-        help_text="Link to your portfolio or relevant work"
+    proposal = forms.CharField(
+        widget=forms.Textarea,
+        help_text="Explain why you're a good fit for this campaign"
     )
     rate = forms.DecimalField(
         help_text="Your proposed rate for this campaign"
     )
-    
+    portfolio_link = forms.URLField(
+        required=False,
+        help_text="Link to your portfolio or relevant work"
+    )
+
+    rate = forms.DecimalField(
+        help_text="Your proposed rate for this campaign"
+    )
+
     class Meta:
         model = CampaignApplication
         fields = ['message']
@@ -53,7 +61,7 @@ class CampaignApplicationForm(forms.ModelForm):
         help_texts = {
             'message': "Explain why you're a good fit for this campaign",
         }
-    
+
     def clean_rate(self):
         rate = self.cleaned_data.get('rate')
         if rate and rate <= 0:

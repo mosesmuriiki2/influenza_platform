@@ -147,18 +147,18 @@ def dashboard(request):
             
             # Get active campaigns that the influencer has been accepted for
             from campaigns.models import Campaign, CampaignApplication
-            
+
             # Get applications made by this influencer
             applications = CampaignApplication.objects.filter(influencer=profile)
             applications_count = applications.count()
-            
+
             # Get active campaigns where the influencer's application has been accepted
             active_campaigns = Campaign.objects.filter(
                 applications__influencer=profile,
                 applications__status='accepted',
                 status='active'
             )
-            
+
             # Add progress percentage to each campaign (placeholder calculation)
             import datetime
             for campaign in active_campaigns:
@@ -172,14 +172,14 @@ def dashboard(request):
                     total_days = (campaign.end_date - campaign.start_date).days
                     days_passed = (today - campaign.start_date).days
                     campaign.progress = min(100, int((days_passed / total_days) * 100))
-            
+
             # Get available campaigns that the influencer hasn't applied to
             available_campaigns = Campaign.objects.filter(
                 status='active'
             ).exclude(
                 applications__influencer=profile
             )[:6]  # Limit to 6 campaigns
-            
+
             return render(request, 'accounts/influencer_dashboard.html', {
                 'profile': profile,
                 'total_followers': total_followers,
@@ -202,7 +202,7 @@ def dashboard(request):
             
             # Get campaigns created by this business
             campaigns = profile.campaigns.all()
-            
+
             # Calculate campaign stats for business dashboard
             campaign_stats = {
                 'completion_rate': profile.get_campaign_completion_rate() if hasattr(profile, 'get_campaign_completion_rate') else 0,
@@ -289,21 +289,24 @@ class InfluencerProfileDetailView(DetailView):
         # Split categories string into a list for template usage
         categories_str = influencer.categories if influencer.categories else ''
         context['categories_list'] = [cat.strip() for cat in categories_str.split(',') if cat.strip()]
-        
+        # Split categories string into a list for template usage
+        categories_str = influencer.categories if influencer.categories else ''
+        context['categories_list'] = [cat.strip() for cat in categories_str.split(',') if cat.strip()]
+
         # Add campaign data for the influencer
         from campaigns.models import Campaign, CampaignApplication
         context['active_campaigns'] = CampaignApplication.objects.filter(
-            influencer=influencer, 
-            status='approved', 
+            influencer=influencer,
+            status='approved',
             campaign__status='active'
         ).select_related('campaign')
-        
+
         context['completed_campaigns'] = CampaignApplication.objects.filter(
-            influencer=influencer, 
-            status='approved', 
+            influencer=influencer,
+            status='approved',
             campaign__status='completed'
         ).select_related('campaign')
-        
+
         # Add social media engagement metrics for charts
         context['engagement_data'] = {
             'labels': ['Instagram', 'Twitter', 'TikTok', 'YouTube', 'Facebook'],
@@ -315,14 +318,14 @@ class InfluencerProfileDetailView(DetailView):
                 influencer.facebook_followers or 0
             ]
         }
-        
+
         # Check if the current user is the owner of this profile
         # This will be used to determine if edit buttons should be shown
         if self.request.user.is_authenticated and hasattr(self.request.user, 'influencer_profile'):
             context['is_owner'] = (self.request.user.influencer_profile == influencer)
         else:
             context['is_owner'] = False
-            
+
         return context
 
 @login_required
@@ -349,7 +352,7 @@ def update_profile_picture(request):
                 return redirect('business_profile_create')
     else:
         messages.error(request, "No image file provided.")
-    
+
     # Redirect back to the page they came from, or to dashboard if referrer not available
     referer = request.META.get('HTTP_REFERER')
     if referer:
@@ -362,7 +365,7 @@ def update_bio(request):
     if request.method == 'POST':
         bio = request.POST.get('bio', '')
         categories = request.POST.get('categories', '')
-        
+
         if request.user.user_type == 'influencer':
             try:
                 profile = request.user.influencer_profile
@@ -382,7 +385,7 @@ def update_bio(request):
             except BusinessProfile.DoesNotExist:
                 messages.error(request, "You need to create a business profile first.")
                 return redirect('business_profile_create')
-    
+
     # Redirect back to the page they came from, or to dashboard if referrer not available
     referer = request.META.get('HTTP_REFERER')
     if referer:
