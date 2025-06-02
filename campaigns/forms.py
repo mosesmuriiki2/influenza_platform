@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from accounts.models import InfluencerProfile
-from .models import Campaign
+from .models import *
 
 class CampaignForm(forms.ModelForm):
     """
