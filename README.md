@@ -17,6 +17,7 @@ Influenza is a comprehensive platform that connects businesses with influencers 
 - Browse and apply to relevant campaigns
 - Track your campaign performance
 - Receive payments for successful promotions
+- **Login with Facebook** to automatically import your profile and follower data
 
 ## Getting Started
 
@@ -24,6 +25,7 @@ Influenza is a comprehensive platform that connects businesses with influencers 
 - Python 3.8+
 - MySQL database
 - Virtual environment (recommended)
+- Facebook Developer Account (for Facebook Login)
 
 ### Installation
 
@@ -320,6 +322,37 @@ The platform supports multiple authentication methods:
 - Google OAuth login
 
 After login, users are automatically redirected to their appropriate dashboard based on their account type (business or influencer).
+
+### Facebook Login Configuration
+
+The platform is configured to use Facebook Login for influencers. This allows influencers to quickly sign up and automatically import their profile data and follower counts.
+
+#### Facebook API Credentials
+
+The following credentials are configured in the application:
+
+- **App ID**: 1210454147373721
+- **App Secret**: f9cf819235cde673123f04ead7c12d6a
+- **Page ID**: 354214138121990
+
+#### How Facebook Login Works
+
+1. When an influencer clicks the "Login with Facebook" button, they are redirected to Facebook for authentication
+2. After successful authentication, Facebook returns user data and an access token
+3. The platform automatically:
+   - Creates a user account with the 'influencer' type
+   - Creates an influencer profile with data from Facebook
+   - Fetches and stores the user's follower count (when available)
+   - Stores the Facebook access token for future API calls
+
+#### Implementation Details
+
+The Facebook login integration uses the `social-auth-app-django` package with a custom pipeline that:
+
+- Sets the user type to 'influencer'
+- Creates an influencer profile with data from Facebook
+- Stores the Facebook access token for later use
+- Fetches follower counts using the Facebook Graph API
 
 ## Technical Details
 

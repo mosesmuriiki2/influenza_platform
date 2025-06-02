@@ -2,6 +2,22 @@
 
 {% block title %}Edit Campaign - Influenza Marketing Platform{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'campaigns/modern_campaign_forms.css' %}">
+
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+    }
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    .is-valid {
+        border-color: #28a745;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container py-5">
     <div class="row mb-4">
@@ -15,12 +31,12 @@
 
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <form method="post">
+            <div class="card">
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data" id="campaign-form">
                         {% csrf_token %}
                         
-                        <h5 class="mb-3">Campaign Details</h5>
+                        <h5 class="section-title">Campaign Details</h5>
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3">
                                 <label for="id_title" class="form-label">Campaign Title</label>
@@ -45,7 +61,10 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="id_budget" class="form-label">Budget ($)</label>
-                                <input type="number" name="budget" class="form-control" id="id_budget" step="0.01" value="{{ campaign.budget }}" required>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" name="budget" class="form-control" id="id_budget" step="0.01" value="{{ campaign.budget }}" required>
+                                </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="id_target_platforms" class="form-label">Target Platforms</label>
@@ -53,7 +72,7 @@
                             </div>
                         </div>
                         
-                        <h5 class="mb-3">Campaign Content</h5>
+                        <h5 class="section-title">Campaign Content</h5>
                         <div class="mb-3">
                             <label for="id_description" class="form-label">Description</label>
                             <textarea name="description" class="form-control" id="id_description" rows="4" required>{{ campaign.description }}</textarea>
@@ -75,7 +94,9 @@
                         </div>
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <button type="submit" class="btn btn-primary">Update Campaign</button>
+                            <button type="submit" class="btn btn-primary px-4 py-2">
+                                <i class="bi bi-check-circle me-2"></i>Update Campaign
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -83,4 +104,45 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation feedback
+        const form = document.getElementById('campaign-form');
+        form.addEventListener('submit', function(e) {
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                // Add shake animation to invalid fields
+                document.querySelectorAll(':invalid').forEach(field => {
+                    field.classList.add('is-invalid');
+                    field.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        field.style.animation = '';
+                    }, 500);
+                });
+            }
+        });
+        
+        // Remove validation styling when field is corrected
+        document.querySelectorAll('input, textarea, select').forEach(field => {
+            field.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                }
+            });
+        });
+        
+        // Add smooth scrolling to form sections
+        document.querySelectorAll('.section-title').forEach(title => {
+            title.addEventListener('click', function() {
+                const nextSection = this.nextElementSibling;
+                window.scrollTo({
+                    top: nextSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+</script>
 {% endblock %}

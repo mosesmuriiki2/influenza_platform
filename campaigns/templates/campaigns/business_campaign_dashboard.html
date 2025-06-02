@@ -1,0 +1,575 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Campaign Dashboard - Influenza Marketing Platform{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+<style>
+    .campaign-card {
+        transition: transform 0.3s ease;
+    }
+    .campaign-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin-bottom: 1rem;
+    }
+    .status-badge {
+        font-size: 0.8rem;
+        padding: 0.35rem 0.65rem;
+    }
+    .influencer-avatar {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+    }
+    .metric-card {
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+    }
+    .metric-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+    .metric-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    .filter-section {
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Campaign Dashboard</h1>
+                <div>
+                    <a href="{% url 'create_campaign' %}" class="btn btn-primary me-2">
+                        <i class="bi bi-plus-circle me-1"></i> Create Campaign
+                    </a>
+                    <a href="{% url 'business_profile' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-person me-1"></i> My Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Performance Metrics -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="metric-card bg-primary bg-opacity-10 border border-primary border-opacity-25">
+                <div class="text-primary metric-icon">
+                    <i class="bi bi-megaphone"></i>
+                </div>
+                <div class="metric-value">{{ active_campaigns_count }}</div>
+                <div class="metric-label">Active Campaigns</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="metric-card bg-success bg-opacity-10 border border-success border-opacity-25">
+                <div class="text-success metric-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="metric-value">{{ completed_campaigns_count }}</div>
+                <div class="metric-label">Completed Campaigns</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="metric-card bg-info bg-opacity-10 border border-info border-opacity-25">
+                <div class="text-info metric-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div class="metric-value">{{ total_influencers }}</div>
+                <div class="metric-label">Assigned Influencers</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="metric-card bg-warning bg-opacity-10 border border-warning border-opacity-25">
+                <div class="text-warning metric-icon">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+                <div class="metric-value">{{ total_engagement }}</div>
+                <div class="metric-label">Total Engagement</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Performance Charts -->
+    <div class="row mb-4">
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Campaign Performance</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="campaignPerformanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Engagement by Platform</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="platformEngagementChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Management Section -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <ul class="nav nav-tabs card-header-tabs" id="campaignTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button" role="tab" aria-controls="active" aria-selected="true">Active Campaigns</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="false">Completed Campaigns</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="draft-tab" data-bs-toggle="tab" data-bs-target="#draft" type="button" role="tab" aria-controls="draft" aria-selected="false">Draft Campaigns</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="filter-section mb-3">
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <label for="dateRangeFilter" class="form-label">Date Range</label>
+                                <select class="form-select" id="dateRangeFilter">
+                                    <option value="all">All Time</option>
+                                    <option value="last-30">Last 30 Days</option>
+                                    <option value="last-90">Last 90 Days</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label for="platformFilter" class="form-label">Platform</label>
+                                <select class="form-select" id="platformFilter">
+                                    <option value="all">All Platforms</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="twitter">Twitter</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="youtube">YouTube</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label for="categoryFilter" class="form-label">Category</label>
+                                <select class="form-select" id="categoryFilter">
+                                    <option value="all">All Categories</option>
+                                    <option value="fashion">Fashion</option>
+                                    <option value="beauty">Beauty</option>
+                                    <option value="lifestyle">Lifestyle</option>
+                                    <option value="tech">Technology</option>
+                                    <option value="food">Food</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="campaignTabsContent">
+                        <!-- Active Campaigns Tab -->
+                        <div class="tab-pane fade show active" id="active" role="tabpanel" aria-labelledby="active-tab">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="activeCampaignsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Campaign</th>
+                                            <th>Influencers</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Budget</th>
+                                            <th>Engagement</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for campaign in active_campaigns %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <h6 class="mb-0">{{ campaign.title }}</h6>
+                                                        <small class="text-muted">{{ campaign.categories }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    {% for application in campaign.applications.all|slice:":3" %}
+                                                    {% if application.status == 'accepted' %}
+                                                    <div class="position-relative me-1">
+                                                        {% if application.influencer.profile_picture %}
+                                                        <img src="{{ application.influencer.profile_picture.url }}" class="rounded-circle influencer-avatar" alt="{{ application.influencer.full_name }}">
+                                                        {% else %}
+                                                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center influencer-avatar">
+                                                            <span class="text-white">{{ application.influencer.full_name|first }}</span>
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    {% if campaign.applications.count > 3 %}
+                                                    <span class="badge bg-secondary">+{{ campaign.applications.count|add:"-3" }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>{{ campaign.start_date }}</td>
+                                            <td>{{ campaign.end_date }}</td>
+                                            <td>${{ campaign.budget }}</td>
+                                            <td>
+                                                <div class="progress" style="height: 6px;">
+                                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ campaign.engagement_rate|default:0 }}%;" aria-valuenow="{{ campaign.engagement_rate|default:0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <small class="text-muted">{{ campaign.engagement_rate|default:0 }}%</small>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{% url 'campaign_detail' campaign.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="{% url 'edit_campaign' campaign.id %}">Edit</a></li>
+                                                        <li><a class="dropdown-item" href="{% url 'campaign_applications' campaign.id %}">View Applications</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#completeCampaignModal{{ campaign.id }}">Mark as Completed</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% if not active_campaigns %}
+                            <div class="alert alert-info">
+                                <p class="mb-0">You don't have any active campaigns. <a href="{% url 'create_campaign' %}">Create a new campaign</a> to get started.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Completed Campaigns Tab -->
+                        <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="completedCampaignsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Campaign</th>
+                                            <th>Influencers</th>
+                                            <th>End Date</th>
+                                            <th>Budget</th>
+                                            <th>Final Engagement</th>
+                                            <th>ROI</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for campaign in completed_campaigns %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <h6 class="mb-0">{{ campaign.title }}</h6>
+                                                        <small class="text-muted">{{ campaign.categories }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ campaign.applications.filter.count }}</td>
+                                            <td>{{ campaign.end_date }}</td>
+                                            <td>${{ campaign.budget }}</td>
+                                            <td>{{ campaign.engagement_rate|default:0 }}%</td>
+                                            <td>
+                                                <span class="badge {% if campaign.roi > 0 %}bg-success{% else %}bg-danger{% endif %}">{{ campaign.roi|default:0 }}%</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{% url 'campaign_detail' campaign.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reopenCampaignModal{{ campaign.id }}">Reopen Campaign</a></li>
+                                                        <li><a class="dropdown-item" href="#">Download Report</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% if not completed_campaigns %}
+                            <div class="alert alert-info">
+                                <p class="mb-0">You don't have any completed campaigns yet.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Draft Campaigns Tab -->
+                        <div class="tab-pane fade" id="draft" role="tabpanel" aria-labelledby="draft-tab">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="draftCampaignsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Campaign</th>
+                                            <th>Created</th>
+                                            <th>Budget</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for campaign in draft_campaigns %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <h6 class="mb-0">{{ campaign.title }}</h6>
+                                                        <small class="text-muted">{{ campaign.categories }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ campaign.created_at|date:"M d, Y" }}</td>
+                                            <td>${{ campaign.budget }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{% url 'edit_campaign' campaign.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#activateCampaignModal{{ campaign.id }}">Activate</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item text-danger" href="#">Delete</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% if not draft_campaigns %}
+                            <div class="alert alert-info">
+                                <p class="mb-0">You don't have any draft campaigns.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals for campaign actions -->
+{% for campaign in active_campaigns %}
+<div class="modal fade" id="completeCampaignModal{{ campaign.id }}" tabindex="-1" aria-labelledby="completeCampaignModalLabel{{ campaign.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="completeCampaignModalLabel{{ campaign.id }}">Mark Campaign as Completed</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to mark "{{ campaign.title }}" as completed? This will end the campaign and move it to your completed campaigns list.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="{% url 'update_campaign_status' campaign.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="completed">
+                    <button type="submit" class="btn btn-primary">Mark as Completed</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% for campaign in completed_campaigns %}
+<div class="modal fade" id="reopenCampaignModal{{ campaign.id }}" tabindex="-1" aria-labelledby="reopenCampaignModalLabel{{ campaign.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reopenCampaignModalLabel{{ campaign.id }}">Reopen Campaign</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reopen "{{ campaign.title }}"? This will move the campaign back to active status.</p>
+                <div class="mb-3">
+                    <label for="newEndDate{{ campaign.id }}" class="form-label">New End Date</label>
+                    <input type="date" class="form-control" id="newEndDate{{ campaign.id }}" name="end_date" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="{% url 'update_campaign_status' campaign.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="active">
+                    <button type="submit" class="btn btn-primary">Reopen Campaign</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% for campaign in draft_campaigns %}
+<div class="modal fade" id="activateCampaignModal{{ campaign.id }}" tabindex="-1" aria-labelledby="activateCampaignModalLabel{{ campaign.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="activateCampaignModalLabel{{ campaign.id }}">Activate Campaign</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to activate "{{ campaign.title }}"? This will make the campaign visible to influencers.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="{% url 'update_campaign_status' campaign.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="active">
+                    <button type="submit" class="btn btn-primary">Activate Campaign</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize DataTables
+        $('#activeCampaignsTable').DataTable({
+            pageLength: 10,
+            order: [[2, 'asc']],
+            language: {
+                search: 'Search:'
+            }
+        });
+        
+        $('#completedCampaignsTable').DataTable({
+            pageLength: 10,
+            order: [[2, 'desc']],
+            language: {
+                search: 'Search:'
+            }
+        });
+        
+        $('#draftCampaignsTable').DataTable({
+            pageLength: 10,
+            order: [[1, 'desc']],
+            language: {
+                search: 'Search:'
+            }
+        });
+        
+        // Campaign Performance Chart
+        const performanceCtx = document.getElementById('campaignPerformanceChart').getContext('2d');
+        const performanceChart = new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                labels: {{ performance_data.labels|safe }},
+                datasets: [{
+                    label: 'Engagement',
+                    data: {{ performance_data.engagement|safe }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                },
+                {
+                    label: 'Reach',
+                    data: {{ performance_data.reach|safe }},
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                },
+                {
+                    label: 'Conversions',
+                    data: {{ performance_data.conversions|safe }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                if (value >= 1000000) {
+                                    return (value / 1000000).toFixed(1) + 'M';
+                                } else if (value >= 1000) {
+                                    return (value / 1000).toFixed(1) + 'K';
+                                }
+                                return value;
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

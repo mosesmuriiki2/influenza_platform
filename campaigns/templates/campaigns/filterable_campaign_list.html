@@ -1,0 +1,418 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Browse Campaigns - Influenza Marketing Platform{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+<style>
+    .campaign-card {
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+    .campaign-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .filter-section {
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .category-badge {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .category-badge:hover {
+        transform: scale(1.05);
+    }
+    .category-badge.active {
+        background-color: #0d6efd !important;
+        color: white !important;
+    }
+    .campaign-image {
+        height: 180px;
+        object-fit: cover;
+    }
+    .campaign-budget {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(13, 110, 253, 0.8);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-weight: 500;
+    }
+    .campaign-status {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-weight: 500;
+    }
+    .campaign-date {
+        font-size: 0.85rem;
+    }
+    .no-results {
+        padding: 3rem;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize DataTable
+        var campaignTable = $('#campaignTable').DataTable({
+            "order": [[ 0, "desc" ]],
+            "language": {
+                "emptyTable": "No campaigns available matching your criteria"
+            },
+            "columnDefs": [
+                { "orderable": false, "targets": 5 }
+            ]
+        });
+        
+        // Filter functionality
+        $('#categoryFilter, #platformFilter, #budgetFilter').on('change', function() {
+            campaignTable.draw();
+        });
+        
+        // Custom filtering function
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                var categoryFilter = $('#categoryFilter').val();
+                var platformFilter = $('#platformFilter').val();
+                var budgetFilter = $('#budgetFilter').val();
+                
+                var categoryMatch = categoryFilter === 'all' || data[1].includes(categoryFilter);
+                var platformMatch = platformFilter === 'all' || data[2].includes(platformFilter);
+                
+                var budget = parseFloat(data[3].replace('$', '').replace(',', ''));
+                var budgetMatch = true;
+                
+                if (budgetFilter === 'under500') {
+                    budgetMatch = budget < 500;
+                } else if (budgetFilter === '500to1000') {
+                    budgetMatch = budget >= 500 && budget <= 1000;
+                } else if (budgetFilter === '1000to5000') {
+                    budgetMatch = budget > 1000 && budget <= 5000;
+                } else if (budgetFilter === 'over5000') {
+                    budgetMatch = budget > 5000;
+                }
+                
+                return categoryMatch && platformMatch && budgetMatch;
+            }
+        );
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Browse Available Campaigns</h1>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-primary"><i class="bi bi-speedometer2 me-2"></i>Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section shadow-sm">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="categoryFilter" class="form-label">Category</label>
+                <select class="form-select" id="categoryFilter">
+                    <option value="all" selected>All Categories</option>
+                    <option value="fashion">Fashion</option>
+                    <option value="beauty">Beauty</option>
+                    <option value="lifestyle">Lifestyle</option>
+                    <option value="tech">Technology</option>
+                    <option value="food">Food & Beverage</option>
+                    <option value="travel">Travel</option>
+                    <option value="fitness">Fitness & Health</option>
+                    <option value="gaming">Gaming</option>
+                    <option value="education">Education</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="platformFilter" class="form-label">Platform</label>
+                <select class="form-select" id="platformFilter">
+                    <option value="all" selected>All Platforms</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="tiktok">TikTok</option>
+                    <option value="twitter">Twitter/X</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="youtube">YouTube</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="budgetFilter" class="form-label">Budget Range</label>
+                <select class="form-select" id="budgetFilter">
+                    <option value="all" selected>All Budgets</option>
+                    <option value="0-500">Under $500</option>
+                    <option value="500-1000">$500 - $1,000</option>
+                    <option value="1000-5000">$1,000 - $5,000</option>
+                    <option value="5000+">$5,000+</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 mb-3">
+                <label class="form-label">Popular Categories</label>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-light text-dark category-badge" data-category="fashion">Fashion</span>
+                    <span class="badge bg-light text-dark category-badge" data-category="beauty">Beauty</span>
+                    <span class="badge bg-light text-dark category-badge" data-category="lifestyle">Lifestyle</span>
+                    <span class="badge bg-light text-dark category-badge" data-category="tech">Technology</span>
+                    <span class="badge bg-light text-dark category-badge" data-category="food">Food & Beverage</span>
+                    <span class="badge bg-light text-dark category-badge" data-category="travel">Travel</span>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="searchFilter" class="form-label">Search</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchFilter" placeholder="Search campaigns...">
+                    <button class="btn btn-outline-secondary" type="button" id="searchButton">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12 d-flex justify-content-end">
+                <button class="btn btn-primary" id="applyFilters">Apply Filters</button>
+                <button class="btn btn-outline-secondary ms-2" id="resetFilters">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaigns Table -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            {% if campaigns %}
+            <div class="table-responsive">
+                <table id="campaignTable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Categories</th>
+                            <th>Platforms</th>
+                            <th>Budget</th>
+                            <th>Timeline</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for campaign in campaigns %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">{{ campaign.title }}</h6>
+                                        <small class="text-muted">by {{ campaign.business.company_name }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ campaign.categories }}</td>
+                            <td>{{ campaign.platforms }}</td>
+                            <td>${{ campaign.budget }}</td>
+                            <td>
+                                <small class="d-block">Start: {{ campaign.start_date|date:"M d, Y" }}</small>
+                                <small class="d-block">End: {{ campaign.end_date|date:"M d, Y" }}</small>
+                            </td>
+                            <td>
+                                <a href="{% url 'campaign_detail' campaign.id %}" class="btn btn-sm btn-primary">View Details</a>
+                                <a href="{% url 'apply_campaign' campaign.id %}" class="btn btn-sm btn-outline-success">Apply</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="no-results">
+                <div class="text-center">
+                    <i class="bi bi-search" style="font-size: 3rem; color: #6c757d;"></i>
+                    <h4 class="mt-3">No Campaigns Available</h4>
+                    <p class="text-muted">There are no active campaigns available at the moment. Please check back later.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Featured Campaigns -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="h4 mb-3">Featured Campaigns</h2>
+        </div>
+        {% for campaign in campaigns|slice:":3" %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm campaign-card">
+                <div class="position-relative">
+                    {% if campaign.campaign_images.first %}
+                    <img src="{{ campaign.campaign_images.first.image.url }}" class="card-img-top campaign-image" alt="{{ campaign.title }}">
+                    {% else %}
+                    <div class="card-img-top campaign-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                    </div>
+                    {% endif %}
+                    <span class="campaign-budget">${{ campaign.budget }}</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ campaign.title }}</h5>
+                    <p class="card-text">{{ campaign.description|truncatechars:100 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge bg-light text-dark me-1">{{ campaign.platforms }}</span>
+                            <span class="badge bg-light text-dark">{{ campaign.categories }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted campaign-date">Ends: {{ campaign.end_date|date:"M d, Y" }}</small>
+                        <a href="{% url 'apply_campaign' campaign.id %}" class="btn btn-sm btn-primary">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <p class="mb-0">No featured campaigns available at the moment.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- No Results Message (Hidden by default) -->
+    <div class="row d-none" id="noResultsMessage">
+        <div class="col-12">
+            <div class="alert alert-info no-results">
+                <i class="bi bi-info-circle-fill me-2 fs-4"></i>
+                <p class="mb-0">No campaigns match your current filters. Try adjusting your search criteria or check back later for new opportunities.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all filter elements
+        const categoryFilter = document.getElementById('categoryFilter');
+        const platformFilter = document.getElementById('platformFilter');
+        const budgetFilter = document.getElementById('budgetFilter');
+        const searchFilter = document.getElementById('searchFilter');
+        const applyFiltersBtn = document.getElementById('applyFilters');
+        const resetFiltersBtn = document.getElementById('resetFilters');
+        const campaignItems = document.querySelectorAll('.campaign-item');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        const categoryBadges = document.querySelectorAll('.category-badge');
+        
+        // Category badge click handler
+        categoryBadges.forEach(badge => {
+            badge.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                categoryFilter.value = category;
+                
+                // Toggle active class
+                categoryBadges.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Apply filters function
+        function applyFilters() {
+            const categoryValue = categoryFilter.value;
+            const platformValue = platformFilter.value;
+            const budgetValue = budgetFilter.value;
+            const searchValue = searchFilter.value.toLowerCase();
+            
+            let visibleCount = 0;
+            
+            campaignItems.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                const itemPlatform = item.getAttribute('data-platform');
+                const itemBudget = parseFloat(item.getAttribute('data-budget'));
+                const itemTitle = item.querySelector('.card-title').textContent.toLowerCase();
+                const itemDescription = item.querySelector('.card-text').textContent.toLowerCase();
+                
+                // Check if item matches all filters
+                let matchesCategory = categoryValue === 'all' || itemCategory.includes(categoryValue);
+                let matchesPlatform = platformValue === 'all' || itemPlatform.includes(platformValue);
+                
+                // Budget range filtering
+                let matchesBudget = true;
+                if (budgetValue !== 'all') {
+                    const budgetRange = budgetValue.split('-');
+                    if (budgetRange.length === 2) {
+                        const minBudget = parseFloat(budgetRange[0]);
+                        const maxBudget = parseFloat(budgetRange[1]);
+                        matchesBudget = itemBudget >= minBudget && itemBudget <= maxBudget;
+                    } else if (budgetValue === '5000+') {
+                        matchesBudget = itemBudget >= 5000;
+                    }
+                }
+                
+                // Search text filtering
+                let matchesSearch = searchValue === '' || 
+                                   itemTitle.includes(searchValue) || 
+                                   itemDescription.includes(searchValue);
+                
+                // Show or hide based on all filters
+                if (matchesCategory && matchesPlatform && matchesBudget && matchesSearch) {
+                    item.classList.remove('d-none');
+                    visibleCount++;
+                } else {
+                    item.classList.add('d-none');
+                }
+            });
+            
+            // Show or hide no results message
+            if (visibleCount === 0) {
+                noResultsMessage.classList.remove('d-none');
+            } else {
+                noResultsMessage.classList.add('d-none');
+            }
+        }
+        
+        // Event listeners
+        applyFiltersBtn.addEventListener('click', applyFilters);
+        
+        // Search on enter key
+        searchFilter.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                applyFilters();
+            }
+        });
+        
+        // Reset filters
+        resetFiltersBtn.addEventListener('click', function() {
+            categoryFilter.value = 'all';
+            platformFilter.value = 'all';
+            budgetFilter.value = 'all';
+            searchFilter.value = '';
+            categoryBadges.forEach(b => b.classList.remove('active'));
+            
+            // Show all campaigns
+            campaignItems.forEach(item => {
+                item.classList.remove('d-none');
+            });
+            
+            // Hide no results message
+            noResultsMessage.classList.add('d-none');
+        });
+    });
+</script>
+{% endblock %}

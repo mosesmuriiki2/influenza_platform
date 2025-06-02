@@ -155,10 +155,13 @@ AUTHENTICATION_BACKENDS = (
 
 # Social Auth Keys
 # These keys should be set in environment variables in production
-SOCIAL_AUTH_FACEBOOK_KEY = ''  # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET = ''  # App Secret
+SOCIAL_AUTH_FACEBOOK_KEY = '1210454147373721'  # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = 'f9cf819235cde673123f04ead7c12d6a'  # App Secret
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''  # Client ID
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''  # Client Secret
+
+# Facebook Page ID
+FACEBOOK_PAGE_ID = '354214138121990'
 
 # Social Auth Pipeline - to handle user type and profile creation
 SOCIAL_AUTH_PIPELINE = (
@@ -172,6 +175,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
     'accounts.pipeline.set_user_type_influencer',  # Custom pipeline to set user type
+    'accounts.pipeline.store_facebook_token',  # Store Facebook access token
 )
 
 # Social Auth Settings

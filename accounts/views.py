@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.db import transaction
 from django.contrib.auth.views import LoginView
+from django.http import HttpResponseRedirect
 
 from .models import User, InfluencerProfile, BusinessProfile
 
@@ -144,11 +145,50 @@ def dashboard(request):
                 total_followers += facebook_followers
                 social_media_stats['facebook'] = facebook_followers
             
+            # Get active campaigns that the influencer has been accepted for
+            from campaigns.models import Campaign, CampaignApplication
+            
+            # Get applications made by this influencer
+            applications = CampaignApplication.objects.filter(influencer=profile)
+            applications_count = applications.count()
+            
+            # Get active campaigns where the influencer's application has been accepted
+            active_campaigns = Campaign.objects.filter(
+                applications__influencer=profile,
+                applications__status='accepted',
+                status='active'
+            )
+            
+            # Add progress percentage to each campaign (placeholder calculation)
+            import datetime
+            for campaign in active_campaigns:
+                # Calculate progress based on start and end dates
+                today = datetime.date.today()
+                if today < campaign.start_date:
+                    campaign.progress = 0
+                elif today > campaign.end_date:
+                    campaign.progress = 100
+                else:
+                    total_days = (campaign.end_date - campaign.start_date).days
+                    days_passed = (today - campaign.start_date).days
+                    campaign.progress = min(100, int((days_passed / total_days) * 100))
+            
+            # Get available campaigns that the influencer hasn't applied to
+            available_campaigns = Campaign.objects.filter(
+                status='active'
+            ).exclude(
+                applications__influencer=profile
+            )[:6]  # Limit to 6 campaigns
+            
             return render(request, 'accounts/influencer_dashboard.html', {
                 'profile': profile,
                 'total_followers': total_followers,
                 'social_media_stats': social_media_stats,
-                'unread_messages': get_unread_messages_count(user)
+                'unread_messages': get_unread_messages_count(user),
+                'applications': applications[:5],  # Show only the 5 most recent applications
+                'applications_count': applications_count,
+                'active_campaigns': active_campaigns,
+                'available_campaigns': available_campaigns
             })
         except InfluencerProfile.DoesNotExist:
             messages.warning(request, "Please complete your influencer profile to access your dashboard.")
@@ -160,17 +200,22 @@ def dashboard(request):
             # Get all influencers for the business to view
             influencers = InfluencerProfile.objects.all()
             
+            # Get campaigns created by this business
+            campaigns = profile.campaigns.all()
+            
             # Calculate campaign stats for business dashboard
             campaign_stats = {
                 'completion_rate': profile.get_campaign_completion_rate() if hasattr(profile, 'get_campaign_completion_rate') else 0,
                 'total_influencers': influencers.count(),
-                'active_campaigns': Campaign.objects.filter(business=profile, status='active').count() if 'Campaign' in globals() else 0
+                'active_campaigns': campaigns.filter(status='active').count(),
+                'total_campaigns': campaigns.count()
             }
             
             return render(request, 'accounts/business_dashboard.html', {
                 'profile': profile,
                 'campaign_stats': campaign_stats,
                 'influencers': influencers,
+                'campaigns': campaigns,
                 'unread_messages': get_unread_messages_count(user)
             })
         except BusinessProfile.DoesNotExist:
@@ -182,8 +227,8 @@ def dashboard(request):
 
 def get_unread_messages_count(user):
     """Helper function to get unread messages count"""
-    # Placeholder - implement actual message counting logic
-    return 0
+    from messaging.models import Message
+    return Message.objects.filter(recipient=user, read=False)
 
 class InfluencerProfileUpdateView(LoginRequiredMixin, UpdateView):
     """View for updating influencer profile"""
@@ -221,7 +266,7 @@ class InfluencerProfileDetailView(DetailView):
     """View for displaying an individual influencer's profile"""
     model = InfluencerProfile
     template_name = 'accounts/influencer_profile.html'
-    context_object_name = 'influencer'
+    context_object_name = 'profile'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -241,4 +286,105 @@ class InfluencerProfileDetailView(DetailView):
             total_followers += influencer.facebook_followers
             
         context['total_followers'] = total_followers
+        # Split categories string into a list for template usage
+        categories_str = influencer.categories if influencer.categories else ''
+        context['categories_list'] = [cat.strip() for cat in categories_str.split(',') if cat.strip()]
+        
+        # Add campaign data for the influencer
+        from campaigns.models import Campaign, CampaignApplication
+        context['active_campaigns'] = CampaignApplication.objects.filter(
+            influencer=influencer, 
+            status='approved', 
+            campaign__status='active'
+        ).select_related('campaign')
+        
+        context['completed_campaigns'] = CampaignApplication.objects.filter(
+            influencer=influencer, 
+            status='approved', 
+            campaign__status='completed'
+        ).select_related('campaign')
+        
+        # Add social media engagement metrics for charts
+        context['engagement_data'] = {
+            'labels': ['Instagram', 'Twitter', 'TikTok', 'YouTube', 'Facebook'],
+            'followers': [
+                influencer.instagram_followers or 0,
+                influencer.twitter_followers or 0,
+                influencer.tiktok_followers or 0,
+                influencer.youtube_subscribers or 0,
+                influencer.facebook_followers or 0
+            ]
+        }
+        
+        # Check if the current user is the owner of this profile
+        # This will be used to determine if edit buttons should be shown
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'influencer_profile'):
+            context['is_owner'] = (self.request.user.influencer_profile == influencer)
+        else:
+            context['is_owner'] = False
+            
         return context
+
+@login_required
+def update_profile_picture(request):
+    """View for updating profile picture"""
+    if request.method == 'POST' and request.FILES.get('profile_picture'):
+        if request.user.user_type == 'influencer':
+            try:
+                profile = request.user.influencer_profile
+                profile.profile_picture = request.FILES['profile_picture']
+                profile.save()
+                messages.success(request, "Profile picture updated successfully!")
+            except InfluencerProfile.DoesNotExist:
+                messages.error(request, "You need to create a profile first.")
+                return redirect('influencer_profile_create')
+        elif request.user.user_type == 'business':
+            try:
+                profile = request.user.business_profile
+                profile.company_logo = request.FILES['profile_picture']
+                profile.save()
+                messages.success(request, "Company logo updated successfully!")
+            except BusinessProfile.DoesNotExist:
+                messages.error(request, "You need to create a business profile first.")
+                return redirect('business_profile_create')
+    else:
+        messages.error(request, "No image file provided.")
+    
+    # Redirect back to the page they came from, or to dashboard if referrer not available
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return HttpResponseRedirect(referer)
+    return redirect('dashboard')
+
+@login_required
+def update_bio(request):
+    """View for updating bio and categories"""
+    if request.method == 'POST':
+        bio = request.POST.get('bio', '')
+        categories = request.POST.get('categories', '')
+        
+        if request.user.user_type == 'influencer':
+            try:
+                profile = request.user.influencer_profile
+                profile.bio = bio
+                profile.categories = categories
+                profile.save()
+                messages.success(request, "Profile information updated successfully!")
+            except InfluencerProfile.DoesNotExist:
+                messages.error(request, "You need to create a profile first.")
+                return redirect('influencer_profile_create')
+        elif request.user.user_type == 'business':
+            try:
+                profile = request.user.business_profile
+                profile.description = bio
+                profile.save()
+                messages.success(request, "Business description updated successfully!")
+            except BusinessProfile.DoesNotExist:
+                messages.error(request, "You need to create a business profile first.")
+                return redirect('business_profile_create')
+    
+    # Redirect back to the page they came from, or to dashboard if referrer not available
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return HttpResponseRedirect(referer)
+    return redirect('dashboard')

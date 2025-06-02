@@ -1,0 +1,320 @@
+/* Modern Campaign Forms CSS */
+
+/* Base Form Styling */
+.campaign-form-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.campaign-form-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    background: #fff;
+}
+
+.campaign-form-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+.campaign-form-header {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    padding: 25px 30px;
+    border-radius: 16px 16px 0 0;
+}
+
+.campaign-form-title {
+    font-weight: 700;
+    margin: 0;
+    font-size: 1.8rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.campaign-form-subtitle {
+    opacity: 0.8;
+    margin-top: 5px;
+    font-size: 1rem;
+}
+
+.campaign-form-body {
+    padding: 30px;
+}
+
+/* Section Styling */
+.form-section {
+    margin-bottom: 35px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.section-title {
+    position: relative;
+    padding-bottom: 12px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    color: #333;
+    font-size: 1.4rem;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    width: 60px;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    border-radius: 4px;
+}
+
+/* Form Controls */
+.form-label {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-control, .form-select {
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.15);
+}
+
+.form-control::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+textarea.form-control {
+    min-height: 120px;
+}
+
+.form-text {
+    color: #6c757d;
+    font-style: italic;
+    margin-top: 6px;
+    font-size: 0.85rem;
+}
+
+/* Input Groups */
+.input-group {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-right: none;
+    color: #495057;
+    font-weight: 500;
+}
+
+.input-group .form-control {
+    border-left: none;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(106, 17, 203, 0.4);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a0cb6 0%, #1565e6 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(106, 17, 203, 0.5);
+}
+
+.btn-outline-primary {
+    color: #6a11cb;
+    border: 2px solid #6a11cb;
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background-color: rgba(106, 17, 203, 0.1);
+    color: #6a11cb;
+    transform: translateY(-3px);
+}
+
+.btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+    transform: translateY(-3px);
+}
+
+.btn i {
+    margin-right: 8px;
+}
+
+/* Image Upload */
+.image-upload-container {
+    margin-bottom: 30px;
+}
+
+.image-item {
+    border: 2px solid #e0e0e0;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    position: relative;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.image-item:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-color: #d0d0d0;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 180px;
+    margin-top: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.image-preview:hover {
+    transform: scale(1.05);
+}
+
+.remove-image {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid #dc3545;
+    color: #dc3545;
+    transition: all 0.2s ease;
+}
+
+.remove-image:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Form Validation */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    background-image: none;
+    padding-right: 15px;
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+    background-image: none;
+    padding-right: 15px;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .campaign-form-header {
+        padding: 20px;
+    }
+    
+    .campaign-form-body {
+        padding: 20px;
+    }
+    
+    .campaign-form-title {
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .campaign-form-card {
+        background: #222;
+    }
+    
+    .section-title {
+        color: #f1f1f1;
+    }
+    
+    .form-label {
+        color: #e0e0e0;
+    }
+    
+    .form-control, .form-select {
+        background-color: #333;
+        border-color: #444;
+        color: #f1f1f1;
+    }
+    
+    .form-control::placeholder {
+        color: #888;
+    }
+    
+    .form-text {
+        color: #aaa;
+    }
+    
+    .image-item {
+        background-color: #333;
+        border-color: #444;
+    }
+}

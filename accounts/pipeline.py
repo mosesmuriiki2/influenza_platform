@@ -1,4 +1,6 @@
 from .models import InfluencerProfile
+import requests
+from django.conf import settings
 
 def set_user_type_influencer(backend, user, response, *args, **kwargs):
     """
@@ -21,6 +23,24 @@ def set_user_type_influencer(backend, user, response, *args, **kwargs):
             if backend.name == 'facebook':
                 if response.get('name'):
                     profile.full_name = response.get('name')
+                
+                # Store Facebook page information if available
+                if response.get('id') and kwargs.get('social') and kwargs['social'].extra_data.get('access_token'):
+                    # Store the Facebook user ID
+                    profile.facebook_page = response.get('id')
+                    
+                    # Get Facebook follower count if possible
+                    try:
+                        access_token = kwargs['social'].extra_data['access_token']
+                        fb_api_url = f"https://graph.facebook.com/v18.0/{response.get('id')}?fields=followers_count&access_token={access_token}"
+                        fb_response = requests.get(fb_api_url)
+                        fb_data = fb_response.json()
+                        
+                        if 'followers_count' in fb_data:
+                            profile.facebook_followers = fb_data['followers_count']
+                    except Exception as e:
+                        # Just log the error but continue with profile creation
+                        print(f"Error fetching Facebook followers: {str(e)}")
             elif backend.name == 'google-oauth2':
                 name_parts = []
                 if response.get('given_name'):
@@ -34,3 +54,15 @@ def set_user_type_influencer(backend, user, response, *args, **kwargs):
             profile.save()
     
     return {'user': user, 'is_new': kwargs.get('is_new', False)}
+
+def store_facebook_token(backend, user, response, *args, **kwargs):
+    """
+    Store the Facebook access token for later use with the Facebook Graph API.
+    This is only called for Facebook authentication.
+    """
+    if backend.name == 'facebook' and user and kwargs.get('social') and kwargs['social'].extra_data.get('access_token'):
+        # Store the token in the session for later use
+        if hasattr(backend, 'strategy') and hasattr(backend.strategy, 'request') and backend.strategy.request:
+            backend.strategy.request.session['facebook_access_token'] = kwargs['social'].extra_data['access_token']
+    
+    return None

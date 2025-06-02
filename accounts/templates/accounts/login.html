@@ -42,11 +42,14 @@
                 
                 <div class="d-flex justify-content-center gap-3 animate__animated animate__fadeIn animate__delay-1s">
                     <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-lg btn-outline-primary animate__animated animate__fadeInLeft animate__delay-1s" style="flex: 1;">
-                        <i class="bi bi-facebook me-2"></i>Facebook
+                        <i class="bi bi-facebook me-2"></i>Facebook <small class="d-block mt-1">(Import your profile)</small>
                     </a>
                     <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-lg btn-outline-danger animate__animated animate__fadeInRight animate__delay-1s" style="flex: 1;">
                         <i class="bi bi-google me-2"></i>Google
                     </a>
+                </div>
+                <div class="text-center mt-2 small text-muted">
+                    <p>Influencers: Login with Facebook to automatically import your profile data and follower counts</p>
                 </div>
             </div>
             <div class="card-footer text-center py-3 animate__animated animate__fadeIn animate__delay-1s">

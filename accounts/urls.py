@@ -12,6 +12,8 @@ urlpatterns = [
     path('profile/influencer/edit/', views.InfluencerProfileUpdateView.as_view(), name='influencer_profile_edit'),
     path('profile/business/edit/', views.BusinessProfileUpdateView.as_view(), name='business_profile_edit'),
     path('profile/influencer/<int:pk>/', views.InfluencerProfileDetailView.as_view(), name='influencer_profile'),
+    path('profile/update-picture/', views.update_profile_picture, name='update_profile_picture'),
+    path('profile/update-bio/', views.update_bio, name='update_bio'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
