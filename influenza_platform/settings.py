@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from django.urls import reverse_lazy
 import pymysql
 pymysql.install_as_MySQLdb()
 
@@ -27,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure--s3*cr-elv5taf+4u=6y!0!&*$xpcw*xx)q#n_p3@!7ja49sx*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['.vercel.app', '.now.sh', 'localhost', '127.0.0.1']
 
@@ -157,8 +158,8 @@ AUTHENTICATION_BACKENDS = (
 # These keys should be set in environment variables in production
 SOCIAL_AUTH_FACEBOOK_KEY = '1210454147373721'  # App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'f9cf819235cde673123f04ead7c12d6a'  # App Secret
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''  # Client ID
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''  # Client Secret
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '896096319726-6mg6hecc6v2qpu2of2pvm4q47calr690.apps.googleusercontent.com'  # Client ID
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'  # Client Secret
 
 # Facebook Page ID
 FACEBOOK_PAGE_ID = '354214138121990'
@@ -181,6 +182,7 @@ SOCIAL_AUTH_PIPELINE = (
 # Social Auth Settings
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/login/'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/dashboard/'
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = reverse_lazy('influencer_profile_create') # Redirect new users to complete profile
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 # Facebook Scope

@@ -48,8 +48,8 @@
                             <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}" class="btn btn-outline-primary btn-sm rounded-pill">
                                 <i class="bi bi-facebook me-1"></i>Facebook
                             </a>
-                            <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}" class="btn btn-outline-danger btn-sm rounded-pill">
-                                <i class="bi bi-google me-1"></i>Google
+                            <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}" class="btn btn-sm rounded-pill" style="background-color: #ffffff; color: #757575; border: 1px solid #dadce0; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
+                                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" style="height: 16px; margin-right: 6px; vertical-align: text-bottom;">Google
                             </a>
                         </div>
                     </div>

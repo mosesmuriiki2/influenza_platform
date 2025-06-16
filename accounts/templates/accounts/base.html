@@ -123,12 +123,12 @@
     <div class="toast-container position-fixed top-0 end-0 p-3">
         {% if messages %}
             {% for message in messages %}
-                <div class="toast show animate__animated animate__fadeInRight" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast show animate__animated animate__fadeInRight" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
                     <div class="toast-header {% if message.tags == 'success' %}bg-success text-white{% elif message.tags == 'error' %}bg-danger text-white{% elif message.tags == 'warning' %}bg-warning{% elif message.tags == 'info' %}bg-info text-white{% endif %}">
                         <i class="bi {% if message.tags == 'success' %}bi-check-circle{% elif message.tags == 'error' %}bi-exclamation-triangle{% elif message.tags == 'warning' %}bi-exclamation-circle{% elif message.tags == 'info' %}bi-info-circle{% endif %} me-2"></i>
                         <strong class="me-auto">{% if message.tags == 'success' %}Success{% elif message.tags == 'error' %}Error{% elif message.tags == 'warning' %}Warning{% elif message.tags == 'info' %}Information{% endif %}</strong>
                         <small>Just now</small>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close {% if message.tags == 'success' or message.tags == 'error' or message.tags == 'info' %}btn-close-white{% endif %}" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
                         {{ message }}
@@ -159,6 +159,16 @@
                     delay: 5000
                 });
             })
+            
+            // Add click event to close buttons
+            document.querySelectorAll('.toast .btn-close').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var toast = bootstrap.Toast.getInstance(this.closest('.toast'));
+                    if (toast) {
+                        toast.hide();
+                    }
+                });
+            });
         });
     </script>
 </body>

@@ -42,6 +42,7 @@ def set_user_type_influencer(backend, user, response, *args, **kwargs):
                         # Just log the error but continue with profile creation
                         print(f"Error fetching Facebook followers: {str(e)}")
             elif backend.name == 'google-oauth2':
+                # Get name from Google response
                 name_parts = []
                 if response.get('given_name'):
                     name_parts.append(response.get('given_name'))
@@ -49,6 +50,12 @@ def set_user_type_influencer(backend, user, response, *args, **kwargs):
                     name_parts.append(response.get('family_name'))
                 if name_parts:
                     profile.full_name = ' '.join(name_parts)
+                
+                # Get profile picture if available
+                if response.get('picture'):
+                    # Google returns picture as a URL, we could download it or store the URL
+                    # For now, we'll just log that we have a picture URL
+                    print(f"Google profile picture URL available: {response.get('picture')}")
             
             # Save the basic profile
             profile.save()

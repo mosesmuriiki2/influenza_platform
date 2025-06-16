@@ -49,10 +49,24 @@ class InfluencerRegistrationView(CreateView):
     success_url = reverse_lazy('influencer_profile_create')
     
     def form_valid(self, form):
+        # Check if passwords match
+        password = form.cleaned_data['password']
+        confirm_password = self.request.POST.get('confirm_password')
+        
+        if password != confirm_password:
+            messages.error(self.request, "Passwords do not match.")
+            return self.form_invalid(form)
+            
+        # Check if email already exists
+        email = form.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            messages.error(self.request, "A user with that email already exists.")
+            return self.form_invalid(form)
+            
         # Set user type to influencer
         user = form.save(commit=False)
         user.user_type = 'influencer'
-        user.set_password(form.cleaned_data['password'])
+        user.set_password(password)
         user.save()
         login(self.request, user)
         messages.success(self.request, "Registration successful! Please complete your profile.")
@@ -66,12 +80,26 @@ class BusinessRegistrationView(CreateView):
     success_url = reverse_lazy('business_profile_create')
     
     def form_valid(self, form):
+        # Check if passwords match
+        password = form.cleaned_data['password']
+        confirm_password = self.request.POST.get('confirm_password')
+        
+        if password != confirm_password:
+            messages.error(self.request, "Passwords do not match.")
+            return self.form_invalid(form)
+            
+        # Check if email already exists
+        email = form.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            messages.error(self.request, "A user with that email already exists.")
+            return self.form_invalid(form)
+            
         # Set user type to business
         user = form.save(commit=False)
         user.user_type = 'business'
-        user.set_password(form.cleaned_data['password'])
+        user.set_password(password)
         user.save()
-        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
+        login(self.request, user)
         messages.success(self.request, "Registration successful! Please complete your business profile.")
         return super().form_valid(form)
 

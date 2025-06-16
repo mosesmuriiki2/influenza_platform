@@ -2,6 +2,12 @@
 
 {% block title %}Register as Business - Influenza Marketing Platform{% endblock %}
 
+{% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% load static %}
+    <script src="{% static 'js/form-validation.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center my-5">
     <div class="col-md-8">
@@ -17,23 +23,59 @@
                     {% csrf_token %}
                     <div class="mb-4">
                         <label for="id_email" class="form-label fw-bold">Business Email address</label>
-                        <input type="email" name="email" class="form-control form-control-lg" id="id_email" required>
+                        <input type="email" name="email" class="form-control form-control-lg {% if form.email.errors %}is-invalid{% endif %}" id="id_email" value="{{ form.email.value|default:'' }}" required>
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                         <div class="form-text">We'll never share your email with anyone else.</div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="id_first_name" class="form-label fw-bold">Contact First Name</label>
-                            <input type="text" name="first_name" class="form-control form-control-lg" id="id_first_name" required>
+                            <input type="text" name="first_name" class="form-control form-control-lg {% if form.first_name.errors %}is-invalid{% endif %}" id="id_first_name" value="{{ form.first_name.value|default:'' }}" required>
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.first_name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="col-md-6">
                             <label for="id_last_name" class="form-label fw-bold">Contact Last Name</label>
-                            <input type="text" name="last_name" class="form-control form-control-lg" id="id_last_name" required>
+                            <input type="text" name="last_name" class="form-control form-control-lg {% if form.last_name.errors %}is-invalid{% endif %}" id="id_last_name" value="{{ form.last_name.value|default:'' }}" required>
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.last_name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="id_password" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" id="id_password" required>
+                        <input type="password" name="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" id="id_password" required minlength="8">
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                         <div class="form-text">Choose a strong password with at least 8 characters.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_confirm_password" class="form-label">Confirm Password</label>
+                        <input type="password" name="confirm_password" class="form-control {% if password_mismatch %}is-invalid{% endif %}" id="id_confirm_password" required>
+                        {% if password_mismatch %}
+                            <div class="invalid-feedback">Passwords do not match.</div>
+                        {% endif %}
+                        <div class="form-text">Please confirm your password.</div>
                     </div>
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Register</button>
