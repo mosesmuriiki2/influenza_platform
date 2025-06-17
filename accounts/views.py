@@ -19,6 +19,14 @@ def register_choice(request):
     """View to choose registration type (influencer or business)"""
     return render(request, 'accounts/register_choice.html')
 
+def privacy_policy(request):
+    """View for privacy policy page"""
+    return render(request, 'accounts/privacy_policy.html')
+
+def terms_conditions(request):
+    """View for terms and conditions page"""
+    return render(request, 'accounts/terms_conditions.html')
+
 class CustomLoginView(LoginView):
     """Custom login view with redirection based on user type"""
     template_name = 'accounts/login.html'
@@ -46,7 +54,7 @@ class InfluencerRegistrationView(CreateView):
     model = User
     template_name = 'accounts/influencer_register.html'
     fields = ['email', 'first_name', 'last_name', 'password']
-    success_url = reverse_lazy('influencer_profile_create')
+    success_url = reverse_lazy('verify_otp')
     
     def form_valid(self, form):
         # Check if passwords match
@@ -61,23 +69,77 @@ class InfluencerRegistrationView(CreateView):
         email = form.cleaned_data['email']
         if User.objects.filter(email=email).exists():
             messages.error(self.request, "A user with that email already exists.")
+            return self.form_invalid(form)
+        
+        # Check if privacy policy and terms are accepted
+        privacy_policy_accepted = self.request.POST.get('privacy_policy_accepted')
+        terms_conditions_accepted = self.request.POST.get('terms_conditions_accepted')
+        
+        if not privacy_policy_accepted:
+            messages.error(self.request, "You must accept the Privacy Policy to register.")
+            return self.form_invalid(form)
+            
+        if not terms_conditions_accepted:
+            messages.error(self.request, "You must accept the Terms and Conditions to register.")
             return self.form_invalid(form)
             
         # Set user type to influencer
         user = form.save(commit=False)
         user.user_type = 'influencer'
         user.set_password(password)
+        
+        # Record privacy policy and terms acceptance
+        from django.utils import timezone
+        user.privacy_policy_accepted = True
+        user.terms_conditions_accepted = True
+        user.privacy_policy_accepted_date = timezone.now()
+        user.terms_conditions_accepted_date = timezone.now()
+        
+        # Generate OTP for email verification
+        import random
+        otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+        user.otp = otp
+        user.otp_created = timezone.now()
+        
         user.save()
-        login(self.request, user)
-        messages.success(self.request, "Registration successful! Please complete your profile.")
+        
+        # Send verification email with OTP
+        self.send_verification_email(user, otp)
+        
+        # Store user ID in session for OTP verification
+        self.request.session['user_id_for_verification'] = user.id
+        
+        messages.success(self.request, "Registration successful! Please check your email for the verification code.")
         return super().form_valid(form)
+        
+    def send_verification_email(self, user, otp):
+        """Send verification email with OTP"""
+        from django.core.mail import send_mail
+        from django.template.loader import render_to_string
+        from django.utils.html import strip_tags
+        from django.conf import settings
+        
+        subject = 'Verify Your Influenza Platform Account'
+        html_message = render_to_string('accounts/email/verification_email.html', {
+            'user': user,
+            'otp': otp,
+        })
+        plain_message = strip_tags(html_message)
+        from_email = settings.DEFAULT_FROM_EMAIL
+        to_email = user.email
+        
+        try:
+            send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
+        except Exception as e:
+            print(f"Error sending email: {e}")
+            # Log the error in production
 
 class BusinessRegistrationView(CreateView):
     """View for business registration"""
     model = User
     template_name = 'accounts/business_register.html'
     fields = ['email', 'first_name', 'last_name', 'password']
-    success_url = reverse_lazy('business_profile_create')
+    success_url = reverse_lazy('verify_otp')
     
     def form_valid(self, form):
         # Check if passwords match
@@ -93,15 +155,69 @@ class BusinessRegistrationView(CreateView):
         if User.objects.filter(email=email).exists():
             messages.error(self.request, "A user with that email already exists.")
             return self.form_invalid(form)
+        
+        # Check if privacy policy and terms are accepted
+        privacy_policy_accepted = self.request.POST.get('privacy_policy_accepted')
+        terms_conditions_accepted = self.request.POST.get('terms_conditions_accepted')
+        
+        if not privacy_policy_accepted:
+            messages.error(self.request, "You must accept the Privacy Policy to register.")
+            return self.form_invalid(form)
+            
+        if not terms_conditions_accepted:
+            messages.error(self.request, "You must accept the Terms and Conditions to register.")
+            return self.form_invalid(form)
             
         # Set user type to business
         user = form.save(commit=False)
         user.user_type = 'business'
         user.set_password(password)
+        
+        # Record privacy policy and terms acceptance
+        from django.utils import timezone
+        user.privacy_policy_accepted = True
+        user.terms_conditions_accepted = True
+        user.privacy_policy_accepted_date = timezone.now()
+        user.terms_conditions_accepted_date = timezone.now()
+        
+        # Generate OTP for email verification
+        import random
+        otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+        user.otp = otp
+        user.otp_created = timezone.now()
+        
         user.save()
-        login(self.request, user)
-        messages.success(self.request, "Registration successful! Please complete your business profile.")
+        
+        # Send verification email with OTP
+        self.send_verification_email(user, otp)
+        
+        # Store user ID in session for OTP verification
+        self.request.session['user_id_for_verification'] = user.id
+        
+        messages.success(self.request, "Registration successful! Please check your email for the verification code.")
         return super().form_valid(form)
+        
+    def send_verification_email(self, user, otp):
+        """Send verification email with OTP"""
+        from django.core.mail import send_mail
+        from django.template.loader import render_to_string
+        from django.utils.html import strip_tags
+        from django.conf import settings
+        
+        subject = 'Verify Your Influenza Platform Account'
+        html_message = render_to_string('accounts/email/verification_email.html', {
+            'user': user,
+            'otp': otp,
+        })
+        plain_message = strip_tags(html_message)
+        from_email = settings.DEFAULT_FROM_EMAIL
+        to_email = user.email
+        
+        try:
+            send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
+        except Exception as e:
+            print(f"Error sending email: {e}")
+            # Log the error in production
 
 class InfluencerProfileCreateView(CreateView):
     """View for creating influencer profile after registration"""
@@ -419,3 +535,140 @@ def update_bio(request):
     if referer:
         return HttpResponseRedirect(referer)
     return redirect('dashboard')
+
+def verify_otp(request):
+    """View for OTP verification"""
+    # Check if user_id is in session
+    user_id = request.session.get('user_id_for_verification')
+    if not user_id:
+        messages.error(request, "Verification session expired. Please register again.")
+        return redirect('register_choice')
+    
+    # Get the user
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        messages.error(request, "User not found. Please register again.")
+        return redirect('register_choice')
+    
+    # Check if already verified
+    if user.email_verified:
+        messages.success(request, "Your email is already verified. Please log in.")
+        return redirect('login')
+    
+    if request.method == 'POST':
+        otp_entered = request.POST.get('otp')
+        
+        # Validate OTP
+        if not otp_entered:
+            messages.error(request, "Please enter the verification code.")
+            return render(request, 'accounts/verify_otp.html')
+        
+        # Check if OTP matches
+        if user.otp != otp_entered:
+            messages.error(request, "Invalid verification code. Please try again.")
+            return render(request, 'accounts/verify_otp.html')
+        
+        # Check if OTP is expired (30 minutes)
+        import datetime
+        from django.utils import timezone
+        
+        if user.otp_created and (timezone.now() - user.otp_created).total_seconds() > 1800:
+            # Generate new OTP
+            import random
+            new_otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+            user.otp = new_otp
+            user.otp_created = timezone.now()
+            user.save()
+            
+            # Send new verification email
+            send_verification_email(user, new_otp)
+            
+            messages.error(request, "Verification code expired. A new code has been sent to your email.")
+            return render(request, 'accounts/verify_otp.html')
+        
+        # Mark email as verified
+        user.email_verified = True
+        user.email_verification_token = None
+        user.otp = None
+        user.save()
+        
+        # Log the user in
+        user.backend = 'django.contrib.auth.backends.ModelBackend'  # ✅ Add this
+        login(request, user)
+        
+        # Clear session
+        if 'user_id_for_verification' in request.session:
+            del request.session['user_id_for_verification']
+        
+        messages.success(request, "Email verified successfully!")
+        
+        # Redirect based on user type
+        if user.user_type == 'influencer':
+            return redirect('influencer_profile_create')
+        else:  # business
+            return redirect('business_profile_create')
+    
+    return render(request, 'accounts/verify_otp.html')
+
+def resend_otp(request):
+    """View for resending OTP"""
+    # Check if user_id is in session
+    user_id = request.session.get('user_id_for_verification')
+    if not user_id:
+        messages.error(request, "Verification session expired. Please register again.")
+        return redirect('register_choice')
+    
+    # Get the user
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        messages.error(request, "User not found. Please register again.")
+        return redirect('register_choice')
+    
+    # Generate new OTP
+    import random
+    from django.utils import timezone
+    new_otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+    user.otp = new_otp
+    user.otp_created = timezone.now()
+    user.save()
+    
+    # Send new verification email
+    send_verification_email(user, new_otp)
+    
+    messages.success(request, "A new verification code has been sent to your email.")
+    return redirect('verify_otp')
+
+def send_verification_email(user, otp):
+    """Helper function to send verification email with OTP"""
+    from django.core.mail import send_mail
+    from django.template.loader import render_to_string
+    from django.utils.html import strip_tags
+    from django.conf import settings
+    import logging
+    
+    # Get logger
+    logger = logging.getLogger(__name__)
+    
+    subject = 'Verify Your Influenza Platform Account'
+    html_message = render_to_string('accounts/email/verification_email.html', {
+        'user': user,
+        'otp': otp,
+    })
+    plain_message = strip_tags(html_message)
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to_email = user.email
+    
+    # Log the OTP for debugging purposes
+    logger.info(f"Sending OTP to {user.email}: {otp}")
+    print(f"OTP for {user.email}: {otp}")
+    
+    try:
+        send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
+        logger.info(f"Email with OTP sent successfully to {user.email}")
+    except Exception as e:
+        error_message = f"Error sending email: {e}"
+        logger.error(error_message)
+        print(error_message)
+        # Log the error in production

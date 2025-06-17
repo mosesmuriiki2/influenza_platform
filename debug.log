@@ -1,0 +1,69 @@
+INFO 2025-06-17 09:45:50,211 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 09:46:09,215 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\accounts\views.py changed, reloading.
+INFO 2025-06-17 09:46:12,046 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 09:46:58,013 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\influenza_platform\settings.py changed, reloading.
+INFO 2025-06-17 09:46:59,982 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 09:47:15,572 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\influenza_platform\settings.py changed, reloading.
+INFO 2025-06-17 09:47:22,808 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 09:47:55,971 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\influenza_platform\settings.py changed, reloading.
+INFO 2025-06-17 09:47:58,060 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 09:48:01,209 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\influenza_platform\settings.py changed, reloading.
+INFO 2025-06-17 09:48:04,390 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 09:48:08,154 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\influenza_platform\settings.py changed, reloading.
+INFO 2025-06-17 09:49:34,904 autoreload Watching for file changes with StatReloader
+ERROR 2025-06-17 09:55:11,174 log Internal Server Error: /verify-otp/
+Traceback (most recent call last):
+  File "C:\Users\Admin\AppData\Roaming\Python\Python312\site-packages\django\contrib\auth\__init__.py", line 121, in login
+    backend = backend or user.backend
+                         ^^^^^^^^^^^^
+AttributeError: 'User' object has no attribute 'backend'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Admin\AppData\Roaming\Python\Python312\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Roaming\Python\Python312\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\Documents\ownprojects\influenza_platform\accounts\views.py", line 597, in verify_otp
+    login(request, user)
+  File "C:\Users\Admin\AppData\Roaming\Python\Python312\site-packages\django\contrib\auth\__init__.py", line 127, in login
+    raise ValueError(
+ValueError: You have multiple authentication backends configured and therefore must provide the `backend` argument or set the `backend` attribute on the user.
+INFO 2025-06-17 09:59:22,435 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\influenza_platform\settings.py changed, reloading.
+INFO 2025-06-17 09:59:25,599 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 10:03:14,265 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\influenza_platform\settings.py changed, reloading.
+INFO 2025-06-17 10:03:17,378 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 10:04:41,654 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\influenza_platform\settings.py changed, reloading.
+INFO 2025-06-17 10:04:45,131 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 10:05:34,822 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\influenza_platform\settings.py changed, reloading.
+INFO 2025-06-17 10:05:37,003 autoreload Watching for file changes with StatReloader
+ERROR 2025-06-17 10:06:03,294 log Internal Server Error: /verify-otp/
+Traceback (most recent call last):
+  File "C:\Users\Admin\AppData\Roaming\Python\Python312\site-packages\django\contrib\auth\__init__.py", line 121, in login
+    backend = backend or user.backend
+                         ^^^^^^^^^^^^
+AttributeError: 'User' object has no attribute 'backend'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Admin\AppData\Roaming\Python\Python312\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Roaming\Python\Python312\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\Documents\ownprojects\influenza_platform\accounts\views.py", line 597, in verify_otp
+    login(request, user)
+  File "C:\Users\Admin\AppData\Roaming\Python\Python312\site-packages\django\contrib\auth\__init__.py", line 127, in login
+    raise ValueError(
+ValueError: You have multiple authentication backends configured and therefore must provide the `backend` argument or set the `backend` attribute on the user.
+INFO 2025-06-17 10:09:13,812 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\accounts\views.py changed, reloading.
+INFO 2025-06-17 10:09:19,122 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 10:09:24,218 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\accounts\views.py changed, reloading.
+INFO 2025-06-17 10:09:27,206 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 10:09:35,308 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\accounts\views.py changed, reloading.
+INFO 2025-06-17 10:09:37,822 autoreload Watching for file changes with StatReloader

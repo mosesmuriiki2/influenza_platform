@@ -46,6 +46,19 @@ class User(AbstractUser):
     ]
     user_type = models.CharField(max_length=10, choices=user_type_choices, default='influencer')
     
+    # Fields for tracking privacy policy and terms acceptance
+    privacy_policy_accepted = models.BooleanField(default=False)
+    terms_conditions_accepted = models.BooleanField(default=False)
+    privacy_policy_accepted_date = models.DateTimeField(null=True, blank=True)
+    terms_conditions_accepted_date = models.DateTimeField(null=True, blank=True)
+    
+    # Fields for email verification
+    email_verified = models.BooleanField(default=False)
+    email_verification_token = models.CharField(max_length=100, blank=True, null=True)
+    email_verification_token_created = models.DateTimeField(null=True, blank=True)
+    otp = models.CharField(max_length=6, blank=True, null=True)
+    otp_created = models.DateTimeField(null=True, blank=True)
+    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     
@@ -68,7 +81,13 @@ class InfluencerProfile(models.Model):
     twitter_handle = models.CharField(max_length=50, blank=True)
     tiktok_handle = models.CharField(max_length=50, blank=True)
     youtube_channel = models.CharField(max_length=100, blank=True)
-    facebook_page = models.CharField(max_length=100, blank=True)
+    
+    # Facebook specific fields
+    facebook_page = models.CharField(max_length=100, blank=True, help_text='Facebook page ID')
+    facebook_page_name = models.CharField(max_length=100, blank=True, help_text='Facebook page name')
+    facebook_page_category = models.CharField(max_length=100, blank=True, help_text='Facebook page category')
+    facebook_url = models.URLField(blank=True, help_text='Facebook profile or page URL')
+    profile_picture_url = models.URLField(blank=True, help_text='URL to profile picture from social media')
     
     # Metrics
     instagram_followers = models.PositiveIntegerField(default=0)

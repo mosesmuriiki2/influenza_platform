@@ -1,0 +1,49 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Verify Your Email - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #6cb2eb, #2a7fba);">
+                    <h1 class="h3 mb-0 text-white">Verify Your Email</h1>
+                </div>
+                <div class="card-body p-4">
+                    {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <p class="text-center mb-4">We've sent a verification code to your email address. Please enter the 6-digit code below to verify your account.</p>
+                    
+                    <form method="post" action="{% url 'verify_otp' %}">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter verification code" required>
+                                <label for="otp">Verification Code</label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Verify Email</button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p>Didn't receive the code? <a href="{% url 'resend_otp' %}" class="text-decoration-none">Resend Code</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

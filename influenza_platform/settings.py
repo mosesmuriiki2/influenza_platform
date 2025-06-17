@@ -186,9 +186,9 @@ SOCIAL_AUTH_NEW_USER_REDIRECT_URL = reverse_lazy('influencer_profile_create') # 
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 # Facebook Scope
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'pages_show_list', 'pages_read_engagement', 'public_profile', 'user_link']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-    'fields': 'id, name, email, picture.type(large)'
+    'fields': 'id, name, email, picture.type(large), link, accounts{name,access_token,fan_count,followers_count,category}'
 }
 
 # Google Scope
@@ -196,3 +196,44 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'uk20.myserverhosts.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'privacy@influenza.ke'  # Replace with your actual Gmail address
+EMAIL_HOST_PASSWORD = '-KnfR0Wi0&BO'  # Replace with your Gmail app password
+DEFAULT_FROM_EMAIL = 'Influenza Platform <privacy@influenza.ke>'
+
+# Configure logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

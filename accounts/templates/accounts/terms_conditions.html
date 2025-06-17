@@ -1,0 +1,133 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Terms and Conditions - Influenza Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #6cb2eb, #2a7fba);">
+                    <h1 class="h2 mb-0 text-white">Terms and Conditions</h1>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <p class="text-muted">Last Updated: {% now "F j, Y" %}</p>
+                    </div>
+                    
+                    <h2 class="h4 mb-3">1. Introduction</h2>
+                    <p>Welcome to Influenza ("we," "our," or "us"). By accessing or using our platform, you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to these Terms, please do not use our platform.</p>
+                    
+                    <h2 class="h4 mb-3 mt-4">2. Definitions</h2>
+                    <p>In these Terms:</p>
+                    <ul>
+                        <li><strong>"Platform"</strong> refers to the Influenza marketing platform, including all its features and services.</li>
+                        <li><strong>"User,"</strong> "you," or "your" refers to any individual or entity that accesses or uses the Platform.</li>
+                        <li><strong>"Influencer"</strong> refers to a User who creates content and has a social media following.</li>
+                        <li><strong>"Business"</strong> refers to a User who seeks to engage Influencers for marketing campaigns.</li>
+                        <li><strong>"Campaign"</strong> refers to a marketing initiative created by a Business on the Platform.</li>
+                        <li><strong>"Content"</strong> refers to any information, data, text, software, music, sound, photographs, graphics, videos, messages, or other materials that Users submit, upload, post, or transmit on the Platform.</li>
+                    </ul>
+                    
+                    <h2 class="h4 mb-3 mt-4">3. Account Registration and Eligibility</h2>
+                    <p>To use our Platform, you must:</p>
+                    <ul>
+                        <li>Be at least 18 years old</li>
+                        <li>Register for an account with accurate and complete information</li>
+                        <li>Maintain the security of your account credentials</li>
+                        <li>Promptly update any changes to your account information</li>
+                        <li>Accept responsibility for all activities that occur under your account</li>
+                    </ul>
+                    <p>We reserve the right to terminate or suspend accounts that violate these Terms or for any other reason at our sole discretion.</p>
+                    
+                    <h2 class="h4 mb-3 mt-4">4. Platform Rules and Conduct</h2>
+                    <p>When using our Platform, you agree not to:</p>
+                    <ul>
+                        <li>Violate any applicable laws or regulations</li>
+                        <li>Infringe on the rights of others, including intellectual property rights</li>
+                        <li>Post or transmit harmful, offensive, or inappropriate content</li>
+                        <li>Impersonate any person or entity</li>
+                        <li>Interfere with the proper functioning of the Platform</li>
+                        <li>Attempt to gain unauthorized access to the Platform or its systems</li>
+                        <li>Use the Platform for any illegal or unauthorized purpose</li>
+                        <li>Engage in any activity that could damage, disable, or impair the Platform</li>
+                    </ul>
+                    
+                    <h2 class="h4 mb-3 mt-4">5. Influencer Obligations</h2>
+                    <p>As an Influencer, you agree to:</p>
+                    <ul>
+                        <li>Provide accurate information about your social media presence and metrics</li>
+                        <li>Create content that complies with all applicable laws and regulations</li>
+                        <li>Disclose your relationship with Businesses as required by applicable laws</li>
+                        <li>Fulfill your obligations for accepted Campaigns</li>
+                        <li>Maintain professional communication with Businesses</li>
+                        <li>Not engage in fraudulent activities, such as purchasing fake followers or engagement</li>
+                    </ul>
+                    
+                    <h2 class="h4 mb-3 mt-4">6. Business Obligations</h2>
+                    <p>As a Business, you agree to:</p>
+                    <ul>
+                        <li>Provide accurate information about your company and Campaigns</li>
+                        <li>Pay Influencers as agreed for completed Campaigns</li>
+                        <li>Provide clear guidelines and expectations for Campaigns</li>
+                        <li>Not request Influencers to create content that violates laws or regulations</li>
+                        <li>Maintain professional communication with Influencers</li>
+                        <li>Respect Influencers' creative freedom within the agreed Campaign parameters</li>
+                    </ul>
+                    
+                    <h2 class="h4 mb-3 mt-4">7. Payments and Fees</h2>
+                    <p>Our payment terms include:</p>
+                    <ul>
+                        <li>Businesses are responsible for paying Influencers for completed Campaigns</li>
+                        <li>We may charge service fees for using the Platform</li>
+                        <li>All fees and payment terms will be clearly disclosed</li>
+                        <li>Payments are processed through our secure payment system</li>
+                        <li>We are not responsible for tax obligations related to payments</li>
+                    </ul>
+                    
+                    <h2 class="h4 mb-3 mt-4">8. Intellectual Property Rights</h2>
+                    <p>Regarding intellectual property:</p>
+                    <ul>
+                        <li>We own all rights to the Platform and its original content</li>
+                        <li>Users retain ownership of their Content but grant us a license to use it for Platform purposes</li>
+                        <li>Users are responsible for ensuring they have the right to post any Content</li>
+                        <li>We may remove Content that violates these Terms or infringes on others' rights</li>
+                    </ul>
+                    
+                    <h2 class="h4 mb-3 mt-4">9. Privacy</h2>
+                    <p>Your privacy is important to us. Our <a href="{% url 'privacy_policy' %}">Privacy Policy</a> explains how we collect, use, and protect your personal information. By using our Platform, you consent to our Privacy Policy.</p>
+                    
+                    <h2 class="h4 mb-3 mt-4">10. Limitation of Liability</h2>
+                    <p>To the maximum extent permitted by law:</p>
+                    <ul>
+                        <li>We provide the Platform "as is" without warranties of any kind</li>
+                        <li>We are not liable for any indirect, incidental, special, consequential, or punitive damages</li>
+                        <li>Our total liability for any claims is limited to the amount you paid to use the Platform</li>
+                        <li>We are not responsible for disputes between Users</li>
+                    </ul>
+                    
+                    <h2 class="h4 mb-3 mt-4">11. Indemnification</h2>
+                    <p>You agree to indemnify and hold us harmless from any claims, damages, liabilities, costs, or expenses arising from your use of the Platform, your Content, or your violation of these Terms.</p>
+                    
+                    <h2 class="h4 mb-3 mt-4">12. Modifications to Terms</h2>
+                    <p>We may modify these Terms at any time. We will notify you of significant changes. Your continued use of the Platform after changes constitutes acceptance of the modified Terms.</p>
+                    
+                    <h2 class="h4 mb-3 mt-4">13. Termination</h2>
+                    <p>We may terminate or suspend your access to the Platform at any time for any reason. You may terminate your account at any time by contacting us.</p>
+                    
+                    <h2 class="h4 mb-3 mt-4">14. Governing Law</h2>
+                    <p>These Terms are governed by the laws of [Your Jurisdiction], without regard to its conflict of law principles.</p>
+                    
+                    <h2 class="h4 mb-3 mt-4">15. Dispute Resolution</h2>
+                    <p>Any disputes arising from these Terms will be resolved through binding arbitration in accordance with the rules of [Arbitration Association] in [Your Jurisdiction].</p>
+                    
+                    <h2 class="h4 mb-3 mt-4">16. Contact Information</h2>
+                    <p>If you have any questions about these Terms, please contact us at:</p>
+                    <p>Email: terms@influenza-platform.com</p>
+                    <p>Address: 123 Marketing Street, Digital City, DC 12345</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
