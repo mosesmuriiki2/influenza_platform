@@ -67,3 +67,4 @@ INFO 2025-06-17 10:09:24,218 autoreload C:\Users\Admin\Documents\ownprojects\inf
 INFO 2025-06-17 10:09:27,206 autoreload Watching for file changes with StatReloader
 INFO 2025-06-17 10:09:35,308 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\accounts\views.py changed, reloading.
 INFO 2025-06-17 10:09:37,822 autoreload Watching for file changes with StatReloader
+INFO 2025-06-17 10:16:24,505 autoreload C:\Users\Admin\Documents\ownprojects\influenza_platform\influenza_platform\settings.py changed, reloading.
