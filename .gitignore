@@ -1,19 +1,20 @@
-.git
-node_modules/
-__pycache__/
-tests/
-.env
-.vscode/
-# Ignore unnecessary files and directories
-.git
-node_modules/
-__pycache__/
-.vscode/
-*.log
+# Ignore local development files
+.git/
 *.pyc
-tests/
+__pycache__/
+*.log
 *.env
+*.vscode/
+node_modules/
 
-*.sqlite3
-*.docs/
-# Ignore unnecessary files and directories  
+# Ignore static files (you'll use a CDN or external storage)
+static/
+media/
+docs/
+# Ignore virtual environment files
+
+# Ignore tests (unless needed in production)
+tests/
+
+# Ignore database files (if using SQLite)
+db.sqlite3
