@@ -208,6 +208,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 # Twitter API Configuration
 SOCIAL_AUTH_TWITTER_KEY = '1i1ekoUZbuv3iajV3xri8L4e4'  # API Key
 SOCIAL_AUTH_TWITTER_SECRET = 'o65WuzQ0VpaOIxbej1GF3zrNPpvbSt9aOreJJCdo6LjszIAzO9'  # API Secret
+SOCIAL_AUTH_TWITTER_REDIRECT_URI = 'https://influenza-platform.vercel.app/social-auth/complete/twitter/'
 
 
 # Email Configuration
