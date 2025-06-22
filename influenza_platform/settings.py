@@ -151,7 +151,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookOAuth2',
     'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.twitter.TwitterOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -206,8 +206,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 ]
 
 # Twitter API Configuration
-SOCIAL_AUTH_TWITTER_KEY = 'T3dueW44Qk9NQWlUUWEyWVJnQWo6MTpjaQ'  # API Key
-SOCIAL_AUTH_TWITTER_SECRET = 'ndf4BQHHzljudpZ0uVX-4GZNDb0kL-LqHO6s1ubQv3G49JPIZc'  # API Secret
+SOCIAL_AUTH_TWITTER_KEY = '1i1ekoUZbuv3iajV3xri8L4e4'  # API Key
+SOCIAL_AUTH_TWITTER_SECRET = 'o65WuzQ0VpaOIxbej1GF3zrNPpvbSt9aOreJJCdo6LjszIAzO9'  # API Secret
 SOCIAL_AUTH_TWITTER_OAUTH2_SCOPE = ['tweet.read', 'users.read', 'offline.access']
 SOCIAL_AUTH_TWITTER_OAUTH2_PROFILE_EXTRA_PARAMS = {
     'include_email': 'true',
