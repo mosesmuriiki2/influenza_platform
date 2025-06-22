@@ -1,29 +1,38 @@
 import requests
 import logging
 from django.conf import settings
+from requests_oauthlib import OAuth1
 
 logger = logging.getLogger(__name__)
 
 class TwitterAPI:
     """
-    A utility class for interacting with the X (formerly Twitter) API v2
+    A utility class for interacting with the X (formerly Twitter) API v1.1 and v2
     to fetch user metrics and other data.
     """
     
-    BASE_URL = "https://api.twitter.com/2/"
+    BASE_URL_V1_1 = "https://api.twitter.com/1.1/"
+    BASE_URL_V2 = "https://api.twitter.com/2/"
     
-    def __init__(self, bearer_token=None):
+    def __init__(self, access_token=None, access_token_secret=None):
         """
         Initialize the TwitterAPI with authentication credentials.
         
         Args:
-            bearer_token (str, optional): The bearer token for API authentication.
-                If not provided, it will try to use the token from settings.
+            access_token (str, optional): The user's access token.
+            access_token_secret (str, optional): The user's access token secret.
         """
-        self.bearer_token = bearer_token or getattr(settings, 'TWITTER_BEARER_TOKEN', None)
-        if not self.bearer_token:
-            logger.warning("No Twitter bearer token provided. API calls will fail.")
-    
+        self.auth = None
+        if access_token and access_token_secret:
+            self.auth = OAuth1(
+                settings.SOCIAL_AUTH_TWITTER_KEY,
+                settings.SOCIAL_AUTH_TWITTER_SECRET,
+                access_token,
+                access_token_secret
+            )
+        else:
+            logger.warning("No Twitter OAuth1 credentials provided. API calls may fail.")
+
     def _get_headers(self):
         """
         Get the headers required for API requests.
@@ -32,7 +41,6 @@ class TwitterAPI:
             dict: Headers for API requests
         """
         return {
-            "Authorization": f"Bearer {self.bearer_token}",
             "Content-Type": "application/json"
         }
     
@@ -48,8 +56,8 @@ class TwitterAPI:
         Returns:
             dict: User data including metrics if available
         """
-        if not self.bearer_token:
-            logger.error("Cannot make API request: No bearer token available")
+        if not self.auth:
+            logger.error("Cannot make API request: No OAuth1 credentials available")
             return None
             
         if fields is None:
@@ -57,11 +65,12 @@ class TwitterAPI:
             
         params = {"user.fields": ",".join(fields)}
         endpoint = f"users/by/username/{username}"
+        url = f"{self.BASE_URL_V2}{endpoint}"
         
         try:
             response = requests.get(
-                f"{self.BASE_URL}{endpoint}",
-                headers=self._get_headers(),
+                url,
+                auth=self.auth,
                 params=params
             )
             response.raise_for_status()
@@ -99,8 +108,8 @@ class TwitterAPI:
         Returns:
             dict: Tweet data or None if request fails
         """
-        if not self.bearer_token:
-            logger.error("Cannot make API request: No bearer token available")
+        if not self.auth:
+            logger.error("Cannot make API request: No OAuth1 credentials available")
             return None
             
         params = {
@@ -120,11 +129,12 @@ class TwitterAPI:
             params["exclude"] = ",".join(exclude)
         
         endpoint = f"users/{user_id}/tweets"
+        url = f"{self.BASE_URL_V2}{endpoint}"
         
         try:
             response = requests.get(
-                f"{self.BASE_URL}{endpoint}",
-                headers=self._get_headers(),
+                url,
+                auth=self.auth,
                 params=params
             )
             response.raise_for_status()

@@ -29,13 +29,22 @@ def fetch_twitter_metrics(backend, user, response, *args, **kwargs):
     """
     if backend.name == 'twitter' and user and user.user_type == 'influencer':
         try:
+            # Get access tokens from session
+            request = backend.strategy.request
+            access_token = request.session.get('twitter_access_token')
+            access_token_secret = request.session.get('twitter_access_token_secret')
+
+            if not access_token or not access_token_secret:
+                logger.error("Twitter access tokens not found in session.")
+                return None
+
             # Get the influencer profile
             profile = InfluencerProfile.objects.get(user=user)
             
             # Check if we have a Twitter handle
             if profile.twitter_handle:
                 # Initialize the Twitter metrics service
-                metrics_service = TwitterMetricsService()
+                metrics_service = TwitterMetricsService(access_token, access_token_secret)
                 
                 # Fetch and store metrics
                 metrics = metrics_service.fetch_user_metrics(profile.twitter_handle)

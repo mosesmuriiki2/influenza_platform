@@ -14,19 +14,25 @@ class TwitterMetricsService:
     This handles API calls and data transformation for visualization.
     """
     
-    def __init__(self):
+    def __init__(self, access_token=None, access_token_secret=None):
         """
         Initialize the Twitter metrics service with API credentials.
         """
-        self.api_key = getattr(settings, 'SOCIAL_AUTH_TWITTER_OAUTH2_KEY', None)
-        self.api_secret = getattr(settings, 'SOCIAL_AUTH_TWITTER_OAUTH2_SECRET', None)
-        self.bearer_token = getattr(settings, 'TWITTER_BEARER_TOKEN', None)
+        self.api_key = getattr(settings, 'SOCIAL_AUTH_TWITTER_KEY', None)
+        self.api_secret = getattr(settings, 'SOCIAL_AUTH_TWITTER_SECRET', None)
+        self.access_token = access_token
+        self.access_token_secret = access_token_secret
         
-        if not self.bearer_token:
-            logger.warning("No Twitter bearer token provided. API calls will fail.")
+        if not all([self.api_key, self.api_secret, self.access_token, self.access_token_secret]):
+            logger.warning("Twitter API credentials not fully provided. API calls will fail.")
             self.client = None
         else:
-            self.client = tweepy.Client(bearer_token=self.bearer_token)
+            self.client = tweepy.Client(
+                consumer_key=self.api_key,
+                consumer_secret=self.api_secret,
+                access_token=self.access_token,
+                access_token_secret=self.access_token_secret
+            )
     
     def fetch_user_metrics(self, twitter_handle):
         """
