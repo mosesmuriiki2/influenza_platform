@@ -62,8 +62,13 @@
                         <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" style="height: 18px; margin-right: 8px; vertical-align: text-bottom;">Sign in with Google
                     </a>
                 </div>
+                <div class="d-flex justify-content-center mt-3">
+                    <a href="{% url 'social:begin' 'twitter-oauth2' %}" class="btn btn-lg btn-outline-info animate__animated animate__fadeInUp animate__delay-1s" style="flex: 1; background-color: #1DA1F2; color: white; border: none;">
+                        <i class="bi bi-twitter me-2"></i>Sign in with X (Twitter) <small class="d-block mt-1">(Import your metrics)</small>
+                    </a>
+                </div>
                 <div class="text-center mt-2 small text-muted">
-                    <p>Influencers: Login with Facebook to automatically import your profile data and follower counts</p>
+                    <p>Influencers: Login with Facebook or X (Twitter) to automatically import your profile data and follower counts</p>
                 </div>
             </div>
             <div class="card-footer text-center py-3 animate__animated animate__fadeIn animate__delay-1s">

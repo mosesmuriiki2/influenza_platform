@@ -136,35 +136,41 @@
         </div>
     </div>
     
-    <div class="col-md-6 mb-4">
-        <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h2 class="h5 mb-0">Messages</h2>
-                <a href="{% url 'messages_inbox' %}" class="btn btn-sm btn-primary">View All</a>
+    <!-- Social Media Stats -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Social Media Stats</h5>
             </div>
             <div class="card-body">
-                {% if unread_messages %}
-                    <div class="list-group">
-                        {% for message in unread_messages %}
-                        <div class="list-group-item">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="mb-1">{{ message.sender.get_full_name|default:message.sender.email }}</h6>
-                                {% load humanize %}
-<small class="text-muted">{{ message.created_at|naturaltime }}</small>
-                            </div>
-                            <p class="message-preview mb-1">{{ message.content|truncatechars:100 }}</p>
-                            <a href="{% url 'reply_message' message.id %}" class="btn btn-sm btn-outline-primary">Reply</a>
-                        </div>
-                        {% endfor %}
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        <h3>{{ total_followers }}</h3>
+                        <p>Total Followers</p>
                     </div>
-                {% else %}
-                    <div class="alert alert-info">
-                        <p class="mb-0">No unread messages.</p>
+                    <div class="col-md-3 text-center">
+                        <h3>{{ influencer_profile.facebook_followers|default:"0" }}</h3>
+                        <p>Facebook Followers</p>
                     </div>
-                {% endif %}
+                    <div class="col-md-3 text-center">
+                        <h3>{{ influencer_profile.instagram_followers|default:"0" }}</h3>
+                        <p>Instagram Followers</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h3>{{ influencer_profile.twitter_followers|default:"0" }}</h3>
+                        <p>Twitter Followers</p>
+                        {% if influencer_profile.twitter_handle %}
+                        <a href="{% url 'twitter_metrics_dashboard' %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fab fa-twitter"></i> View Twitter Metrics
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
     
     <div class="col-md-6 mb-4">
         <div class="card h-100">

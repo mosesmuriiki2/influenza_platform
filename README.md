@@ -18,6 +18,7 @@ Influenza is a comprehensive platform that connects businesses with influencers 
 - Track your campaign performance
 - Receive payments for successful promotions
 - **Login with Facebook** to automatically import your profile and follower data
+- **Login with X (Twitter)** to automatically import your metrics and track engagement
 
 ## Getting Started
 
@@ -26,6 +27,7 @@ Influenza is a comprehensive platform that connects businesses with influencers 
 - MySQL database
 - Virtual environment (recommended)
 - Facebook Developer Account (for Facebook Login)
+- Twitter Developer Account (for X/Twitter Login and metrics)
 
 ### Installation
 
@@ -320,6 +322,7 @@ The platform supports multiple authentication methods:
 - Email and password login
 - Facebook OAuth login
 - Google OAuth login
+- X (Twitter) OAuth2 login
 
 After login, users are automatically redirected to their appropriate dashboard based on their account type (business or influencer).
 
@@ -353,6 +356,45 @@ The Facebook login integration uses the `social-auth-app-django` package with a 
 - Creates an influencer profile with data from Facebook
 - Stores the Facebook access token for later use
 - Fetches follower counts using the Facebook Graph API
+
+### X (Twitter) Login Configuration
+
+The platform is configured to use X (Twitter) OAuth2 for influencers. This allows influencers to quickly sign up and automatically import their metrics data.
+
+#### Twitter API Credentials
+
+To use the Twitter integration, you need to configure the following credentials in your settings:
+
+- **API Key**: Your Twitter API Key (Consumer Key)
+- **API Secret**: Your Twitter API Secret (Consumer Secret)
+- **Bearer Token**: Your Twitter API Bearer Token
+
+#### Callback URI Configuration
+
+For the Twitter OAuth2 flow to work correctly, you must configure the following callback URI in your Twitter Developer Portal:
+
+```
+https://influenza-platform.vercel.app/social-auth/complete/twitter-oauth2/
+```
+
+#### How Twitter Login Works
+
+1. When an influencer clicks the "Sign in with X (Twitter)" button, they are redirected to Twitter for authentication
+2. After successful authentication, Twitter returns user data and an access token
+3. The platform automatically:
+   - Creates a user account with the 'influencer' type
+   - Creates or updates an influencer profile with Twitter handle
+   - Fetches and stores the user's follower count and engagement metrics
+   - Provides a dedicated Twitter metrics dashboard
+
+#### Twitter Metrics Dashboard
+
+The platform includes a dedicated Twitter metrics dashboard that shows:
+
+- Follower growth over time
+- Engagement rate trends
+- Average likes, retweets, replies, and quotes
+- Recent posts with performance metrics
 
 ## Technical Details
 

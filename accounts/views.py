@@ -594,8 +594,7 @@ def verify_otp(request):
         user.save()
         
         # Log the user in
-        user.backend = 'django.contrib.auth.backends.ModelBackend'  # ✅ Add this
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         
         # Clear session
         if 'user_id_for_verification' in request.session:

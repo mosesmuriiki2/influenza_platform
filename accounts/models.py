@@ -237,3 +237,8 @@ class Payment(models.Model):
     
     def __str__(self):
         return f"Payment of {self.amount} to {self.influencer}"
+
+
+# Import Twitter models to ensure they're loaded when Django starts
+# This is placed at the end to avoid circular imports
+from . import models_twitter

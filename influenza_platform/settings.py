@@ -151,6 +151,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookOAuth2',
     'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -160,6 +161,10 @@ SOCIAL_AUTH_FACEBOOK_KEY = '1210454147373721'  # App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'f9cf819235cde673123f04ead7c12d6a'  # App Secret
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '896096319726-6mg6hecc6v2qpu2of2pvm4q47calr690.apps.googleusercontent.com'  # Client ID
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'  # Client Secret
+
+# Twitter API Configuration
+# Replace these with actual values after creating a Twitter Developer account
+
 
 # Facebook Page ID
 FACEBOOK_PAGE_ID = '354214138121990'
@@ -177,6 +182,9 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.user_details',
     'accounts.pipeline.set_user_type_influencer',  # Custom pipeline to set user type
     'accounts.pipeline.store_facebook_token',  # Store Facebook access token
+    'accounts.pipeline_twitter.store_twitter_token',  # Custom pipeline to store Twitter token
+    'accounts.pipeline_twitter.fetch_twitter_metrics',  # Custom pipeline to fetch Twitter metrics
+    'accounts.pipeline.redirect_to_appropriate_page',  # Custom pipeline to handle redirection
 )
 
 # Social Auth Settings
@@ -186,7 +194,7 @@ SOCIAL_AUTH_NEW_USER_REDIRECT_URL = reverse_lazy('influencer_profile_create') # 
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 # Facebook Scope
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'pages_show_list', 'pages_read_engagement', 'public_profile', 'user_link']
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'pages_show_list', 'pages_read_engagement', 'public_profile', 'user_link', 'instagram_basic']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email, picture.type(large), link, accounts{name,access_token,fan_count,followers_count,category}'
 }
@@ -196,6 +204,20 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
+
+# Twitter API Configuration
+SOCIAL_AUTH_TWITTER_KEY = 'T3dueW44Qk9NQWlUUWEyWVJnQWo6MTpjaQ'  # API Key
+SOCIAL_AUTH_TWITTER_SECRET = 'ndf4BQHHzljudpZ0uVX-4GZNDb0kL-LqHO6s1ubQv3G49JPIZc'  # API Secret
+SOCIAL_AUTH_TWITTER_OAUTH2_SCOPE = ['tweet.read', 'users.read', 'offline.access']
+SOCIAL_AUTH_TWITTER_OAUTH2_PROFILE_EXTRA_PARAMS = {
+    'include_email': 'true',
+    'include_entities': 'false',
+    'include_status': 'false'
+}
+
+
+# Twitter OAuth2 Redirect URL for Vercel deployment
+SOCIAL_AUTH_TWITTER_OAUTH2_REDIRECT_URI = 'https://influenza-platform.vercel.app/social-auth/complete/twitter-oauth2/'
 
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

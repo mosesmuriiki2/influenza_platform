@@ -103,3 +103,43 @@ def store_facebook_token(backend, user, response, *args, **kwargs):
             backend.strategy.request.session['facebook_access_token'] = kwargs['social'].extra_data['access_token']
     
     return None
+
+def redirect_to_appropriate_page(backend, details, user=None, *args, **kwargs):
+    """
+    Custom pipeline function to redirect users to the appropriate page after social authentication.
+    - New users with incomplete profiles are redirected to profile creation
+    - Existing users with complete profiles are redirected to dashboard
+    """
+    # Only proceed if we have a user
+    if not user:
+        return None
+        
+    # Get the request object
+    if not hasattr(backend, 'strategy') or not hasattr(backend.strategy, 'request'):
+        return None
+        
+    request = backend.strategy.request
+    
+    # Check if the user is an influencer
+    if user.user_type == 'influencer':
+        try:
+            # Check if the user has a complete profile
+            profile = user.influencer_profile
+            # If we get here, the profile exists, redirect to dashboard
+            return {'redirect_url': '/dashboard/'}
+        except:
+            # Profile doesn't exist, redirect to profile creation
+            return {'redirect_url': '/profile/influencer/create/'}
+    
+    # Check if the user is a business
+    elif user.user_type == 'business':
+        try:
+            # Check if the user has a complete profile
+            profile = user.business_profile
+            # If we get here, the profile exists, redirect to dashboard
+            return {'redirect_url': '/dashboard/'}
+        except:
+            # Profile doesn't exist, redirect to profile creation
+            return {'redirect_url': '/profile/business/create/'}
+    
+    return None

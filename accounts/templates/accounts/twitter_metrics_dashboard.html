@@ -1,0 +1,383 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Twitter Metrics Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .metrics-card {
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: white;
+    }
+    
+    .metric-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #1DA1F2; /* Twitter blue */
+    }
+    
+    .metric-label {
+        font-size: 14px;
+        color: #657786; /* Twitter gray */
+    }
+    
+    .chart-container {
+        height: 300px;
+        margin-bottom: 30px;
+    }
+    
+    .post-card {
+        border-left: 4px solid #1DA1F2;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #f8f9fa;
+    }
+    
+    .post-metrics {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        color: #657786;
+    }
+    
+    .post-metric {
+        display: flex;
+        align-items: center;
+    }
+    
+    .post-metric i {
+        margin-right: 5px;
+    }
+    
+    .refresh-btn {
+        background-color: #1DA1F2;
+        color: white;
+        border: none;
+    }
+    
+    .refresh-btn:hover {
+        background-color: #0c85d0;
+    }
+    
+    .time-period-selector {
+        margin-bottom: 20px;
+    }
+    
+    .time-period-selector .btn {
+        margin-right: 5px;
+    }
+    
+    .time-period-selector .btn.active {
+        background-color: #1DA1F2;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">Twitter Metrics Dashboard</h1>
+            <p class="text-muted">Track your Twitter performance and engagement metrics</p>
+            
+            {% if not profile.twitter_handle %}
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> Please add your Twitter handle in your profile to view metrics.
+                <a href="{% url 'influencer_profile_edit' %}" class="btn btn-sm btn-primary ml-3">Update Profile</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if profile.twitter_handle %}
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4><i class="fab fa-twitter text-primary"></i> @{{ profile.twitter_handle }}</h4>
+                <button id="refresh-metrics" class="btn refresh-btn">
+                    <i class="fas fa-sync-alt"></i> Refresh Metrics
+                </button>
+            </div>
+            <p class="text-muted" id="last-update">
+                {% if latest_metrics %}
+                Last updated: {{ latest_metrics.fetched_at|date:"F d, Y H:i" }}
+                {% else %}
+                No metrics data available yet
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    
+    <!-- Key Metrics Overview -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="metrics-card text-center">
+                <div class="metric-value" id="followers-count">
+                    {% if latest_metrics %}
+                    {{ latest_metrics.followers_count|intcomma }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </div>
+                <div class="metric-label">Followers</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metrics-card text-center">
+                <div class="metric-value" id="engagement-rate">
+                    {% if latest_metrics %}
+                    {{ latest_metrics.engagement_rate|floatformat:2 }}%
+                    {% else %}
+                    -
+                    {% endif %}
+                </div>
+                <div class="metric-label">Engagement Rate</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metrics-card text-center">
+                <div class="metric-value">
+                    {% if latest_metrics %}
+                    {{ latest_metrics.avg_likes|floatformat:1 }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </div>
+                <div class="metric-label">Avg. Likes per Post</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metrics-card text-center">
+                <div class="metric-value">
+                    {% if latest_metrics %}
+                    {{ latest_metrics.avg_retweets|floatformat:1 }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </div>
+                <div class="metric-label">Avg. Retweets per Post</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="metrics-card">
+                <h5 class="mb-3">Follower Growth & Engagement</h5>
+                
+                <div class="time-period-selector">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary active" data-days="30">30 Days</button>
+                        <button type="button" class="btn btn-outline-primary" data-days="90">90 Days</button>
+                        <button type="button" class="btn btn-outline-primary" data-days="180">6 Months</button>
+                        <button type="button" class="btn btn-outline-primary" data-days="365">1 Year</button>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="follower-trend-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="metrics-card">
+                <h5 class="mb-3">Engagement Breakdown</h5>
+                <div class="chart-container">
+                    <canvas id="engagement-breakdown-chart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="metrics-card">
+                <h5 class="mb-3">Recent Posts Performance</h5>
+                
+                {% if recent_posts %}
+                <div id="recent-posts">
+                    {% for post in recent_posts %}
+                    <div class="post-card">
+                        <div class="post-text">{{ post.text }}</div>
+                        <div class="post-date text-muted">{{ post.created_at }}</div>
+                        <div class="post-metrics">
+                            <div class="post-metric">
+                                <i class="far fa-heart"></i> {{ post.metrics.likes }}
+                            </div>
+                            <div class="post-metric">
+                                <i class="fas fa-retweet"></i> {{ post.metrics.retweets }}
+                            </div>
+                            <div class="post-metric">
+                                <i class="far fa-comment"></i> {{ post.metrics.replies }}
+                            </div>
+                            <div class="post-metric">
+                                <i class="fas fa-quote-right"></i> {{ post.metrics.quotes }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    No recent posts data available.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize charts if metrics data is available
+        {% if metrics_data %}
+
+
+        const metricsData = {{ metrics_data|safe }};
+        initCharts(metricsData);
+        {% endif %}
+        
+        // Refresh metrics button
+        $('#refresh-metrics').click(function() {
+            const button = $(this);
+            button.prop('disabled', true);
+            button.html('<i class="fas fa-spinner fa-spin"></i> Refreshing...');
+            
+            $.ajax({
+                url: '{% url "refresh_twitter_metrics" %}',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        // Update metrics on page
+                        $('#followers-count').text(response.followers.toLocaleString());
+                        $('#engagement-rate').text(response.engagement_rate + '%');
+                        $('#last-update').text('Last updated: ' + response.last_update);
+                        
+                        // Show success message
+                        showAlert('success', response.message);
+                        
+                        // Reload charts
+                        loadCharts(30);
+                    } else {
+                        showAlert('warning', response.message);
+                    }
+                },
+                error: function() {
+                    showAlert('danger', 'An error occurred while refreshing metrics.');
+                },
+                complete: function() {
+                    button.prop('disabled', false);
+                    button.html('<i class="fas fa-sync-alt"></i> Refresh Metrics');
+                }
+            });
+        });
+        
+        // Time period selector
+        $('.time-period-selector .btn').click(function() {
+            $('.time-period-selector .btn').removeClass('active');
+            $(this).addClass('active');
+            
+            const days = $(this).data('days');
+            loadCharts(days);
+        });
+        
+        function loadCharts(days) {
+            $.ajax({
+                url: '{% url "twitter_metrics_api" %}',
+                type: 'GET',
+                data: { days: days },
+                success: function(response) {
+                    if (response.success) {
+                        initCharts(response.data);
+                    } else {
+                        showAlert('warning', response.message);
+                    }
+                },
+                error: function() {
+                    showAlert('danger', 'An error occurred while loading chart data.');
+                }
+            });
+        }
+        
+        function initCharts(data) {
+            if (!data) return;
+            
+            // Follower trend chart
+            const followerCtx = document.getElementById('follower-trend-chart').getContext('2d');
+            if (window.followerChart) {
+                window.followerChart.destroy();
+            }
+            
+            window.followerChart = new Chart(followerCtx, {
+                type: 'line',
+                data: data.follower_trend,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+            
+            // Engagement breakdown chart
+            const engagementCtx = document.getElementById('engagement-breakdown-chart').getContext('2d');
+            if (window.engagementChart) {
+                window.engagementChart.destroy();
+            }
+            
+            window.engagementChart = new Chart(engagementCtx, {
+                type: 'doughnut',
+                data: data.engagement_breakdown,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        }
+        
+        function showAlert(type, message) {
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            `;
+            
+            // Remove any existing alerts
+            $('.alert-container').remove();
+            
+            // Add new alert container and alert
+            $('<div class="alert-container"></div>')
+                .html(alertHtml)
+                .prependTo('.container');
+                
+            // Auto-dismiss after 5 seconds
+            setTimeout(function() {
+                $('.alert-container').fadeOut('slow', function() {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
+    });
+</script>
+{% endblock %}

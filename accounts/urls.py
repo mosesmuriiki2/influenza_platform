@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from . import views
+from . import views, views_twitter
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -21,4 +21,10 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
+    
+    # Twitter metrics URLs
+    path('twitter-metrics/', views_twitter.twitter_metrics_dashboard, name='twitter_metrics_dashboard'),
+    path('twitter-metrics/refresh/', views_twitter.refresh_twitter_metrics, name='refresh_twitter_metrics'),
+    path('api/twitter-metrics/', views_twitter.twitter_metrics_api, name='twitter_metrics_api'),
+    path('api/twitter-posts/', views_twitter.twitter_posts_api, name='twitter_posts_api'),
 ]
