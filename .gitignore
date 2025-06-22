@@ -1,0 +1,19 @@
+.git
+node_modules/
+__pycache__/
+tests/
+.env
+.vscode/
+# Ignore unnecessary files and directories
+.git
+node_modules/
+__pycache__/
+.vscode/
+*.log
+*.pyc
+tests/
+*.env
+
+*.sqlite3
+*.docs/
+# Ignore unnecessary files and directories  
