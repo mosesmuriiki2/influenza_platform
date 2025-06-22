@@ -208,16 +208,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 # Twitter API Configuration
 SOCIAL_AUTH_TWITTER_KEY = '1i1ekoUZbuv3iajV3xri8L4e4'  # API Key
 SOCIAL_AUTH_TWITTER_SECRET = 'o65WuzQ0VpaOIxbej1GF3zrNPpvbSt9aOreJJCdo6LjszIAzO9'  # API Secret
-SOCIAL_AUTH_TWITTER_OAUTH2_SCOPE = ['tweet.read', 'users.read', 'offline.access']
-SOCIAL_AUTH_TWITTER_OAUTH2_PROFILE_EXTRA_PARAMS = {
-    'include_email': 'true',
-    'include_entities': 'false',
-    'include_status': 'false'
-}
 
-
-# Twitter OAuth2 Redirect URL for Vercel deployment
-SOCIAL_AUTH_TWITTER_OAUTH2_REDIRECT_URI = 'https://influenza-platform.vercel.app/social-auth/complete/twitter-oauth2/'
 
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
