@@ -163,7 +163,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '896096319726-6mg6hecc6v2qpu2of2pvm4q47calr690.a
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'  # Client Secret
 
 # Twitter API Configuration
-# Replace these with actual values after creating a Twitter Developer account
+SOCIAL_AUTH_TWITTER_KEY = 'YOUR_TWITTER_API_KEY'  # Replace with your Twitter API Key
+SOCIAL_AUTH_TWITTER_SECRET = 'YOUR_TWITTER_API_SECRET'  # Replace with your Twitter API Secret
 
 
 # Facebook Page ID
