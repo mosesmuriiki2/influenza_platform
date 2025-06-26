@@ -162,10 +162,6 @@ SOCIAL_AUTH_FACEBOOK_SECRET = 'f9cf819235cde673123f04ead7c12d6a'  # App Secret
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '896096319726-6mg6hecc6v2qpu2of2pvm4q47calr690.apps.googleusercontent.com'  # Client ID
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'  # Client Secret
 
-# Twitter API Configuration
-SOCIAL_AUTH_TWITTER_KEY = 'YOUR_TWITTER_API_KEY'  # Replace with your Twitter API Key
-SOCIAL_AUTH_TWITTER_SECRET = 'YOUR_TWITTER_API_SECRET'  # Replace with your Twitter API Secret
-
 
 # Facebook Page ID
 FACEBOOK_PAGE_ID = '354214138121990'
