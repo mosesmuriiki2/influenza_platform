@@ -1,0 +1,256 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Manual Credit Allocation{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Manual Credit Allocation</h2>
+                <a href="{% url 'master_credit_dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+            
+            <!-- Credit Allocation Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Allocate Credits to Business</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="creditAllocationForm">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        {% if messages %}
+                        <div class="alert alert-success">
+                            {% for message in messages %}
+                            {{ message }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.business.id_for_label }}" class="form-label">Business</label>
+                                {{ form.business }}
+                                {% if form.business.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.business.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.credits.id_for_label }}" class="form-label">Credits to Allocate</label>
+                                <div class="input-group">
+                                    {{ form.credits }}
+                                    <span class="input-group-text">credits</span>
+                                </div>
+                                {% if form.credits.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.credits.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="form-text" id="creditValueKES">Equivalent to <span id="kesValue">0</span> KES</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.allocation_type.id_for_label }}" class="form-label">Allocation Type</label>
+                            {{ form.allocation_type }}
+                            {% if form.allocation_type.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.allocation_type.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">Notes</label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.notes.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="form-text">Internal notes for this allocation (not visible to business)</div>
+                        </div>
+                        
+                        <div class="alert alert-info" id="allocationSummary">
+                            <h6 class="alert-heading">Allocation Summary</h6>
+                            <p class="mb-0">Please review the allocation details before confirming.</p>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Business:</strong> <span id="summaryBusiness">Select a business</span></p>
+                                    <p class="mb-1"><strong>Current Balance:</strong> <span id="summaryCurrentBalance">-</span></p>
+                                    <p class="mb-1"><strong>New Balance:</strong> <span id="summaryNewBalance">-</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Credits to Allocate:</strong> <span id="summaryCredits">0</span></p>
+                                    <p class="mb-1"><strong>KES Equivalent:</strong> <span id="summaryKES">0</span></p>
+                                    <p class="mb-1"><strong>Allocation Type:</strong> <span id="summaryType">-</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'master_credit_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Confirm Allocation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Recent Allocations -->
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Recent Allocations</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Business</th>
+                                    <th>Type</th>
+                                    <th class="text-end">Credits</th>
+                                    <th>Allocated By</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for allocation in recent_allocations %}
+                                <tr>
+                                    <td>{{ allocation.timestamp|date:"M d, Y H:i" }}</td>
+                                    <td>{{ allocation.wallet.business.company_name }}</td>
+                                    <td>
+                                        {% if allocation.allocation_type == 'bonus' %}
+                                        <span class="badge bg-success">Bonus</span>
+                                        {% elif allocation.allocation_type == 'adjustment' %}
+                                        <span class="badge bg-warning">Adjustment</span>
+                                        {% elif allocation.allocation_type == 'refund' %}
+                                        <span class="badge bg-info">Refund</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ allocation.allocation_type|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">{{ allocation.amount }}</td>
+                                    <td>{{ allocation.allocated_by.email }}</td>
+                                    <td>{{ allocation.notes|truncatechars:30 }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-3">No recent allocations</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const creditValueKES = {{ credit_value_kes|default:1000 }};
+        const creditsInput = document.getElementById('{{ form.credits.id_for_label }}');
+        const businessSelect = document.getElementById('{{ form.business.id_for_label }}');
+        const allocationType = document.getElementById('{{ form.allocation_type.id_for_label }}');
+        
+        // Update KES value when credits change
+        function updateKESValue() {
+            const credits = parseFloat(creditsInput.value) || 0;
+            const kesValue = (credits * creditValueKES).toLocaleString();
+            document.getElementById('kesValue').textContent = kesValue;
+            document.getElementById('summaryCredits').textContent = credits;
+            document.getElementById('summaryKES').textContent = kesValue + ' KES';
+        }
+        
+        // Update business info in summary
+        function updateBusinessInfo() {
+            const businessId = businessSelect.value;
+            if (businessId) {
+                fetch(`/accounts/api/business-credit-info/${businessId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('summaryBusiness').textContent = data.company_name;
+                        document.getElementById('summaryCurrentBalance').textContent = 
+                            `${data.balance} credits (${data.balance_kes.toLocaleString()} KES)`;
+                        
+                        // Calculate new balance
+                        const credits = parseFloat(creditsInput.value) || 0;
+                        const newBalance = data.balance + credits;
+                        document.getElementById('summaryNewBalance').textContent = 
+                            `${newBalance} credits (${(newBalance * creditValueKES).toLocaleString()} KES)`;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching business info:', error);
+                    });
+            } else {
+                document.getElementById('summaryBusiness').textContent = 'Select a business';
+                document.getElementById('summaryCurrentBalance').textContent = '-';
+                document.getElementById('summaryNewBalance').textContent = '-';
+            }
+        }
+        
+        // Update allocation type in summary
+        function updateAllocationType() {
+            const selectedOption = allocationType.options[allocationType.selectedIndex];
+            document.getElementById('summaryType').textContent = selectedOption.text;
+        }
+        
+        // Initial update
+        updateKESValue();
+        updateBusinessInfo();
+        updateAllocationType();
+        
+        // Add event listeners
+        creditsInput.addEventListener('input', function() {
+            updateKESValue();
+            updateBusinessInfo(); // To update new balance
+        });
+        
+        businessSelect.addEventListener('change', updateBusinessInfo);
+        allocationType.addEventListener('change', updateAllocationType);
+        
+        // Pre-select business if provided in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const preselectedBusinessId = urlParams.get('business_id');
+        if (preselectedBusinessId) {
+            for (let i = 0; i < businessSelect.options.length; i++) {
+                if (businessSelect.options[i].value === preselectedBusinessId) {
+                    businessSelect.selectedIndex = i;
+                    updateBusinessInfo();
+                    break;
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

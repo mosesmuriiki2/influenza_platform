@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice #{{ invoice.invoice_number }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .invoice-header img {
+            max-height: 80px;
+        }
+        .invoice-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        .invoice-details {
+            margin-bottom: 30px;
+        }
+        .invoice-details-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .invoice-to {
+            margin-bottom: 30px;
+        }
+        .invoice-to h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .total-row {
+            font-weight: bold;
+        }
+        .invoice-footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+        .payment-info {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .payment-info h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .status-paid {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        .status-overdue {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <div>
+                <div class="invoice-title">INVOICE</div>
+                <div>#{{ invoice.invoice_number }}</div>
+            </div>
+            <div>
+                <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.png' %}" alt="Company Logo">
+                <div>Influenza Platform</div>
+            </div>
+        </div>
+
+        <div class="invoice-details">
+            <div class="invoice-details-row">
+                <div>
+                    <strong>Date Issued:</strong> {{ invoice.issued_date|date:"F d, Y" }}
+                </div>
+                <div>
+                    <strong>Due Date:</strong> {{ invoice.due_date|date:"F d, Y" }}
+                </div>
+            </div>
+            <div class="invoice-details-row">
+                <div>
+                    <strong>Status:</strong> 
+                    {% if invoice.status == 'paid' %}
+                        <span class="status-paid">Paid</span>
+                    {% elif invoice.status == 'overdue' %}
+                        <span class="status-overdue">Overdue</span>
+                    {% else %}
+                        <span class="status-pending">Pending</span>
+                    {% endif %}
+                </div>
+                <div>
+                    <strong>Invoice Type:</strong> {{ invoice.get_invoice_type_display }}
+                </div>
+            </div>
+        </div>
+
+        <div class="invoice-to">
+            <h3>Billed To:</h3>
+            <div>{{ business.company_name }}</div>
+            <div>{{ business.address }}</div>
+            <div>{{ business.city }}, {{ business.country }}</div>
+            <div>{{ business.email }}</div>
+            <div>{{ business.phone }}</div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Rate (KES)</th>
+                    <th>Amount (KES)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ invoice.get_invoice_type_display }}</td>
+                    <td>{{ invoice.credits }} credits</td>
+                    <td>{{ credit_value_kes }}</td>
+                    <td>{{ invoice.amount }}</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="3" style="text-align: right;">Total:</td>
+                    <td>KES {{ invoice.amount }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        {% if invoice.notes %}
+        <div class="payment-info">
+            <h3>Notes</h3>
+            <p>{{ invoice.notes }}</p>
+        </div>
+        {% endif %}
+
+        <div class="payment-info">
+            <h3>Payment Information</h3>
+            <p><strong>Bank Transfer:</strong> Account Name: Influenza Platform Ltd, Account Number: 1234567890, Bank: Example Bank</p>
+            <p><strong>M-Pesa:</strong> Paybill Number: 123456, Account Number: Your Business Name</p>
+        </div>
+
+        <div class="invoice-footer">
+            <p>Thank you for your business!</p>
+            <p>If you have any questions concerning this invoice, please contact support@influenzaplatform.com</p>
+        </div>
+    </div>
+</body>
+</html>

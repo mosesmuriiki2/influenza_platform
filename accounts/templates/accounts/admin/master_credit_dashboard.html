@@ -1,0 +1,190 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Master Credit Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h2 class="mb-4">Master Credit Dashboard</h2>
+            
+            <!-- Credit Summary Cards -->
+            <div class="row mb-4">
+                <!-- Total Credits Pool -->
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-primary">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Total Credits Pool</h5>
+                            <h2 class="display-5 mb-0">{{ master_wallet.balance }}</h2>
+                            <p class="text-muted">{{ master_wallet.balance_kes|intcomma }} KES</p>
+                            <p class="card-text">Total credits available in the master wallet</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Credits Allocated -->
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-success">
+                        <div class="card-body">
+                            <h5 class="card-title text-success">Credits Allocated</h5>
+                            <h2 class="display-5 mb-0">{{ total_allocated }}</h2>
+                            <p class="text-muted">{{ total_allocated|multiply:credit_value_kes|intcomma }} KES</p>
+                            <p class="card-text">Total credits allocated to businesses</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Available Float -->
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-info">
+                        <div class="card-body">
+                            <h5 class="card-title text-info">Available Float</h5>
+                            <h2 class="display-5 mb-0">{{ available_float }}</h2>
+                            <p class="text-muted">{{ available_float|multiply:credit_value_kes|intcomma }} KES</p>
+                            <p class="card-text">Credits available for allocation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body d-flex flex-wrap gap-3">
+                            <a href="{% url 'manual_credit_allocation' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Allocate Credits
+                            </a>
+                            <a href="{% url 'credit_reconciliation' %}" class="btn btn-info">
+                                <i class="bi bi-arrow-repeat"></i> Reconciliation
+                            </a>
+                            <a href="#" class="btn btn-outline-secondary" onclick="window.print()">
+                                <i class="bi bi-printer"></i> Print Report
+                            </a>
+                            <a href="{% url 'admin:index' %}" class="btn btn-outline-dark">
+                                <i class="bi bi-gear"></i> Django Admin
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Business Credits Table -->
+            <div class="card mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Business Credit Balances</h5>
+                    <a href="{% url 'admin:accounts_creditwallet_changelist' %}" class="btn btn-sm btn-outline-primary">
+                        View All in Admin
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Business</th>
+                                    <th>Email</th>
+                                    <th class="text-end">Credit Balance</th>
+                                    <th class="text-end">KES Equivalent</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for wallet in business_wallets %}
+                                <tr>
+                                    <td>{{ wallet.business.company_name }}</td>
+                                    <td>{{ wallet.business.user.email }}</td>
+                                    <td class="text-end">{{ wallet.balance }}</td>
+                                    <td class="text-end">{{ wallet.balance_kes|intcomma }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'business_credit_management' wallet.business.id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> Manage
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-3">No businesses with credit wallets yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Transactions -->
+            <div class="card">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Transactions</h5>
+                    <a href="{% url 'admin:accounts_transaction_changelist' %}" class="btn btn-sm btn-outline-primary">
+                        View All in Admin
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Business</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in recent_transactions %}
+                                <tr>
+                                    <td>{{ transaction.timestamp|date:"M d, Y H:i" }}</td>
+                                    <td>{{ transaction.wallet.business.company_name }}</td>
+                                    <td>
+                                        {% if transaction.transaction_type == 'purchase' %}
+                                        <span class="badge bg-success">Purchase</span>
+                                        {% elif transaction.transaction_type == 'campaign' %}
+                                        <span class="badge bg-primary">Campaign</span>
+                                        {% elif transaction.transaction_type == 'allocation' %}
+                                        <span class="badge bg-info">Allocation</span>
+                                        {% elif transaction.transaction_type == 'refund' %}
+                                        <span class="badge bg-warning">Refund</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ transaction.transaction_type|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ transaction.description }}</td>
+                                    <td class="text-end">
+                                        {% if transaction.transaction_type == 'purchase' or transaction.transaction_type == 'allocation' or transaction.transaction_type == 'refund' %}
+                                        <span class="text-success">+{{ transaction.amount }}</span>
+                                        {% elif transaction.transaction_type == 'campaign' %}
+                                        <span class="text-danger">-{{ transaction.amount }}</span>
+                                        {% else %}
+                                        {{ transaction.amount }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-3">No transactions yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Include Chart.js for analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add any dashboard-specific JavaScript here
+    });
+</script>
+{% endblock %}

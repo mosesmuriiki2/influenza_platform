@@ -1,0 +1,227 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Create Campaign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0">Create New Campaign</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Credit Balance Information -->
+                        <div class="alert alert-info mb-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="alert-heading mb-1">Your Credit Balance</h6>
+                                    <p class="mb-0">You have <strong>{{ credit_balance }}</strong> credits available</p>
+                                </div>
+                                <a href="{% url 'credit_purchase' %}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-plus-circle"></i> Purchase Credits
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Campaign Title</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.title.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Campaign Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.description.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.budget.id_for_label }}" class="form-label">Budget (KES)</label>
+                                {{ form.budget }}
+                                {% if form.budget.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.budget.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="form-text" id="creditEstimate">Estimated credit cost: <span id="estimatedCredits">0</span> credits</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.target_platforms.id_for_label }}" class="form-label">Target Platforms</label>
+                                {{ form.target_platforms }}
+                                {% if form.target_platforms.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.target_platforms.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.start_date.id_for_label }}" class="form-label">Start Date</label>
+                                {{ form.start_date }}
+                                {% if form.start_date.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.start_date.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.end_date.id_for_label }}" class="form-label">End Date</label>
+                                {{ form.end_date }}
+                                {% if form.end_date.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.end_date.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.target_audience.id_for_label }}" class="form-label">Target Audience</label>
+                                {{ form.target_audience }}
+                                {% if form.target_audience.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.target_audience.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.target_metrics.id_for_label }}" class="form-label">Target Metrics</label>
+                                {{ form.target_metrics }}
+                                {% if form.target_metrics.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.target_metrics.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.campaign_brief.id_for_label }}" class="form-label">Campaign Brief</label>
+                            {{ form.campaign_brief }}
+                            {% if form.campaign_brief.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.campaign_brief.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="form-text">Upload a PDF document with detailed campaign requirements</div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'business_dashboard' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-arrow-right"></i> Continue to Credit Check
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Credit Information Card -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Campaign Credit Information</h5>
+                </div>
+                <div class="card-body">
+                    <p>Before submitting your campaign, please note:</p>
+                    <ul>
+                        <li>Each campaign requires credits based on its budget (1 credit = 1,000 KES)</li>
+                        <li>Credits will be deducted from your wallet when your campaign is approved</li>
+                        <li>Insufficient credits will prevent campaign submission</li>
+                        <li>You can purchase additional credits at any time</li>
+                    </ul>
+                    
+                    <div class="alert alert-light border">
+                        <h6>Credit Calculation Formula:</h6>
+                        <p class="mb-0">
+                            <code>Credits Required = Campaign Budget / 1,000</code>
+                        </p>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a href="{% url 'credit_purchase' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-credit-card"></i> Purchase Credits
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const budgetInput = document.getElementById('{{ form.budget.id_for_label }}');
+        const estimatedCreditsSpan = document.getElementById('estimatedCredits');
+        
+        // Update estimated credits when budget changes
+        function updateEstimatedCredits() {
+            const budget = parseFloat(budgetInput.value) || 0;
+            const estimatedCredits = Math.ceil(budget / 1000);
+            estimatedCreditsSpan.textContent = estimatedCredits;
+            
+            // Update color based on available credits
+            const availableCredits = {{ credit_balance|default:0 }};
+            if (estimatedCredits > availableCredits) {
+                estimatedCreditsSpan.classList.add('text-danger');
+                estimatedCreditsSpan.classList.remove('text-success');
+            } else {
+                estimatedCreditsSpan.classList.add('text-success');
+                estimatedCreditsSpan.classList.remove('text-danger');
+            }
+        }
+        
+        // Initial update
+        updateEstimatedCredits();
+        
+        // Add event listener
+        budgetInput.addEventListener('input', updateEstimatedCredits);
+    });
+</script>
+{% endblock %}

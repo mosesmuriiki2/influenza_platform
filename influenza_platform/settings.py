@@ -248,3 +248,16 @@ DEFAULT_FROM_EMAIL = 'Influenza Platform <privacy@influenza.ke>'
 #         },
 #     },
 # }
+
+# M-Pesa API Configuration
+# Replace these with your actual credentials from the Safaricom Developer Portal
+MPESA_CONSUMER_KEY = '1nVlVtiA04EfvAlXJ7j2rXZIsRY6mSpT'
+MPESA_CONSUMER_SECRET = 'A52uXcuizLd5acKZ'
+MPESA_BUSINESS_SHORTCODE = '600977'  # Paybill or Till Number
+MPESA_PASSKEY = 'your_passkey'
+MPESA_CALLBACK_URL = 'https://influenza.ke/api/mpesa/callback/'
+
+# Credit System Configuration
+CREDIT_CONVERSION_RATE = 1000  # 1 credit = 1000 KES
+MINIMUM_CREDIT_PURCHASE = 1  # Minimum credits that can be purchased at once
+MAXIMUM_CREDIT_PURCHASE = 100  # Maximum credits that can be purchased at once

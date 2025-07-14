@@ -1,0 +1,357 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Business Credit Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Business Credit Management</h2>
+                <a href="{% url 'master_credit_dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+            
+            <!-- Business Info Card -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>{{ business.company_name }}</h3>
+                            <p class="text-muted mb-1">{{ business.user.email }}</p>
+                            <p class="mb-1"><strong>Contact:</strong> {{ business.contact_person }}</p>
+                            <p class="mb-1"><strong>Phone:</strong> {{ business.phone_number }}</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <div class="mb-3">
+                                <h4 class="mb-1">Current Credit Balance</h4>
+                                <h2 class="display-5 mb-0">{{ wallet.balance }}</h2>
+                                <p class="text-muted">{{ wallet.balance_kes|intcomma }} KES</p>
+                            </div>
+                            <a href="{% url 'manual_credit_allocation' %}?business_id={{ business.id }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Allocate Credits
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Credit Activity Tabs -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <ul class="nav nav-tabs card-header-tabs" id="businessCreditTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions" type="button" role="tab" aria-controls="transactions" aria-selected="true">
+                                Transactions
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="campaigns-tab" data-bs-toggle="tab" data-bs-target="#campaigns" type="button" role="tab" aria-controls="campaigns" aria-selected="false">
+                                Campaign Credits
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="payments-tab" data-bs-toggle="tab" data-bs-target="#payments" type="button" role="tab" aria-controls="payments" aria-selected="false">
+                                Payment History
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="businessCreditTabsContent">
+                        <!-- Transactions Tab -->
+                        <div class="tab-pane fade show active" id="transactions" role="tabpanel" aria-labelledby="transactions-tab">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th>Reference</th>
+                                            <th class="text-end">Amount</th>
+                                            <th class="text-end">Balance After</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for transaction in transactions %}
+                                        <tr>
+                                            <td>{{ transaction.timestamp|date:"M d, Y H:i" }}</td>
+                                            <td>
+                                                {% if transaction.transaction_type == 'purchase' %}
+                                                <span class="badge bg-success">Purchase</span>
+                                                {% elif transaction.transaction_type == 'campaign' %}
+                                                <span class="badge bg-primary">Campaign</span>
+                                                {% elif transaction.transaction_type == 'allocation' %}
+                                                <span class="badge bg-info">Allocation</span>
+                                                {% elif transaction.transaction_type == 'refund' %}
+                                                <span class="badge bg-warning">Refund</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">{{ transaction.transaction_type|title }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ transaction.description }}</td>
+                                            <td>{{ transaction.reference }}</td>
+                                            <td class="text-end">
+                                                {% if transaction.transaction_type == 'purchase' or transaction.transaction_type == 'allocation' or transaction.transaction_type == 'refund' %}
+                                                <span class="text-success">+{{ transaction.amount }}</span>
+                                                {% elif transaction.transaction_type == 'campaign' %}
+                                                <span class="text-danger">-{{ transaction.amount }}</span>
+                                                {% else %}
+                                                {{ transaction.amount }}
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end">{{ transaction.balance_after }}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center py-3">No transactions found</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Pagination for transactions -->
+                            {% if transactions.has_other_pages %}
+                            <nav aria-label="Transaction pagination" class="mt-4">
+                                <ul class="pagination justify-content-center">
+                                    {% if transactions.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ transactions.previous_page_number }}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&laquo;</span>
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% for i in transactions.paginator.page_range %}
+                                    {% if transactions.number == i %}
+                                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                                    {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if transactions.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ transactions.next_page_number }}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&raquo;</span>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Campaign Credits Tab -->
+                        <div class="tab-pane fade" id="campaigns" role="tabpanel" aria-labelledby="campaigns-tab">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Campaign</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th class="text-end">Credits Used</th>
+                                            <th class="text-end">KES Equivalent</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for ledger in campaign_ledgers %}
+                                        <tr>
+                                            <td>
+                                                <a href="{% url 'campaign_detail' ledger.campaign.id %}" target="_blank">
+                                                    {{ ledger.campaign.title }}
+                                                </a>
+                                            </td>
+                                            <td>{{ ledger.created_at|date:"M d, Y" }}</td>
+                                            <td>
+                                                {% if ledger.campaign.status == 'approved' %}
+                                                <span class="badge bg-success">Approved</span>
+                                                {% elif ledger.campaign.status == 'pending' %}
+                                                <span class="badge bg-warning">Pending</span>
+                                                {% elif ledger.campaign.status == 'rejected' %}
+                                                <span class="badge bg-danger">Rejected</span>
+                                                {% elif ledger.campaign.status == 'completed' %}
+                                                <span class="badge bg-info">Completed</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">{{ ledger.campaign.status|title }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end">{{ ledger.credits_used }}</td>
+                                            <td class="text-end">{{ ledger.credits_used_kes|intcomma }}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center py-3">No campaign credit records found</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Pagination for campaign ledgers -->
+                            {% if campaign_ledgers.has_other_pages %}
+                            <nav aria-label="Campaign ledger pagination" class="mt-4">
+                                <ul class="pagination justify-content-center">
+                                    {% if campaign_ledgers.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?tab=campaigns&page={{ campaign_ledgers.previous_page_number }}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&laquo;</span>
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% for i in campaign_ledgers.paginator.page_range %}
+                                    {% if campaign_ledgers.number == i %}
+                                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                                    {% else %}
+                                    <li class="page-item"><a class="page-link" href="?tab=campaigns&page={{ i }}">{{ i }}</a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if campaign_ledgers.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?tab=campaigns&page={{ campaign_ledgers.next_page_number }}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&raquo;</span>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Payment History Tab -->
+                        <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Payment Method</th>
+                                            <th>Reference</th>
+                                            <th class="text-end">Credits</th>
+                                            <th class="text-end">Amount (KES)</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for mpesa in mpesa_payments %}
+                                        <tr>
+                                            <td>{{ mpesa.created_at|date:"M d, Y H:i" }}</td>
+                                            <td>M-Pesa</td>
+                                            <td>{{ mpesa.transaction_id }}</td>
+                                            <td class="text-end">{{ mpesa.credits }}</td>
+                                            <td class="text-end">{{ mpesa.amount|intcomma }}</td>
+                                            <td>
+                                                {% if mpesa.status == 'completed' %}
+                                                <span class="badge bg-success">Completed</span>
+                                                {% elif mpesa.status == 'pending' %}
+                                                <span class="badge bg-warning">Pending</span>
+                                                {% elif mpesa.status == 'failed' %}
+                                                <span class="badge bg-danger">Failed</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">{{ mpesa.status|title }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'admin:accounts_mpesapayment_change' mpesa.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        
+                                        {% for bank in bank_transfers %}
+                                        <tr>
+                                            <td>{{ bank.created_at|date:"M d, Y H:i" }}</td>
+                                            <td>Bank Transfer</td>
+                                            <td>{{ bank.reference_number }}</td>
+                                            <td class="text-end">{{ bank.credits }}</td>
+                                            <td class="text-end">{{ bank.amount|intcomma }}</td>
+                                            <td>
+                                                {% if bank.status == 'verified' %}
+                                                <span class="badge bg-success">Verified</span>
+                                                {% elif bank.status == 'pending' %}
+                                                <span class="badge bg-warning">Pending</span>
+                                                {% elif bank.status == 'rejected' %}
+                                                <span class="badge bg-danger">Rejected</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">{{ bank.status|title }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'admin:accounts_banktransfer_change' bank.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        
+                                        {% if not mpesa_payments and not bank_transfers %}
+                                        <tr>
+                                            <td colspan="7" class="text-center py-3">No payment records found</td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle tab persistence with URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+        
+        if (tab) {
+            const tabElement = document.querySelector(`#${tab}-tab`);
+            if (tabElement) {
+                const tabTrigger = new bootstrap.Tab(tabElement);
+                tabTrigger.show();
+            }
+        }
+        
+        // Update URL when tabs change
+        const tabs = document.querySelectorAll('button[data-bs-toggle="tab"]');
+        tabs.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function (event) {
+                const id = event.target.id.replace('-tab', '');
+                const url = new URL(window.location);
+                url.searchParams.set('tab', id);
+                window.history.replaceState(null, '', url.toString());
+            });
+        });
+    });
+</script>
+{% endblock %}

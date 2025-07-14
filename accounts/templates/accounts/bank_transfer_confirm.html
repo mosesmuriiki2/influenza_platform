@@ -1,0 +1,86 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Bank Transfer Confirmation{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Bank Transfer Confirmation</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Success Message -->
+                    <div class="alert alert-success mb-4">
+                        <h5><i class="bi bi-check-circle-fill me-2"></i> Transfer Details Submitted</h5>
+                        <p class="mb-0">Thank you for submitting your bank transfer details. We will verify your payment and add credits to your account within 24 hours.</p>
+                    </div>
+                    
+                    <!-- Pending Transfers -->
+                    {% if pending_transfers %}
+                    <div class="mb-4">
+                        <h5>Your Pending Transfers</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Reference</th>
+                                        <th class="text-end">Credits</th>
+                                        <th class="text-end">Amount (KES)</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for transfer in pending_transfers %}
+                                    <tr>
+                                        <td>{{ transfer.created_at|date:"M d, Y H:i" }}</td>
+                                        <td>{{ transfer.reference }}</td>
+                                        <td class="text-end">{{ transfer.credits }}</td>
+                                        <td class="text-end">{{ transfer.amount|intcomma }}</td>
+                                        <td>
+                                            <span class="badge bg-warning">Pending Verification</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- What's Next -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">What's Next?</h5>
+                        </div>
+                        <div class="card-body">
+                            <ol class="mb-0">
+                                <li class="mb-2">Our team will verify your payment with our bank.</li>
+                                <li class="mb-2">Once verified, we will add the credits to your account.</li>
+                                <li class="mb-2">You will receive an email notification when credits are added.</li>
+                                <li class="mb-0">You can check your transaction history for updates.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <div class="alert alert-info">
+                        <h6 class="mb-2">Need Help?</h6>
+                        <p class="mb-0">If you have any questions or need assistance, please contact our support team at <a href="mailto:support@influenza.ke">support@influenza.ke</a> or call +254 700 123 456.</p>
+                    </div>
+                </div>
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'credit_history' %}" class="btn btn-primary">View Transaction History</a>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

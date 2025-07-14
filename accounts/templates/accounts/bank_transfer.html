@@ -1,0 +1,119 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Bank Transfer for Credits{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Bank Transfer for Credits</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Bank Transfer Instructions -->
+                    <div class="alert alert-info mb-4">
+                        <h5>Bank Transfer Instructions</h5>
+                        <p>Please follow these steps to purchase credits via bank transfer:</p>
+                        <ol>
+                            <li>Transfer the exact amount to our bank account</li>
+                            <li>Use your company name as the reference</li>
+                            <li>Submit the transfer details below</li>
+                            <li>We will verify your payment and add credits to your account</li>
+                        </ol>
+                    </div>
+                    
+                    <!-- Bank Account Details -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Bank Account Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Bank Name:</strong> Kenya Commercial Bank</p>
+                                    <p><strong>Account Name:</strong> Influenza Platform Ltd</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Account Number:</strong> 1234567890</p>
+                                    <p><strong>Branch:</strong> Nairobi Main</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Transfer Details Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Error Display -->
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <p>Please correct the errors below:</p>
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Credits Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.credits.id_for_label }}" class="form-label">{{ form.credits.label }}</label>
+                            <div class="input-group">
+                                <input type="number" name="{{ form.credits.name }}" id="{{ form.credits.id_for_label }}" 
+                                       class="form-control {% if form.credits.errors %}is-invalid{% endif %}" 
+                                       value="{{ form.credits.value }}" readonly>
+                                <span class="input-group-text">credits</span>
+                            </div>
+                            {% if form.credits.errors %}
+                            <div class="invalid-feedback d-block">{{ form.credits.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">{{ form.credits.help_text }}</div>
+                        </div>
+                        
+                        <!-- Amount Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.amount.id_for_label }}" class="form-label">{{ form.amount.label }}</label>
+                            <div class="input-group">
+                                <input type="text" name="{{ form.amount.name }}" id="{{ form.amount.id_for_label }}" 
+                                       class="form-control {% if form.amount.errors %}is-invalid{% endif %}" 
+                                       value="{{ form.amount.value }}" readonly>
+                                <span class="input-group-text">KES</span>
+                            </div>
+                            {% if form.amount.errors %}
+                            <div class="invalid-feedback d-block">{{ form.amount.errors }}</div>
+                            {% endif %}
+                            <div class="alert alert-warning mt-2">
+                                <strong>Important:</strong> Please transfer exactly this amount to our bank account.
+                            </div>
+                        </div>
+                        
+                        <!-- Reference Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.reference.id_for_label }}" class="form-label">{{ form.reference.label }}</label>
+                            <input type="text" name="{{ form.reference.name }}" id="{{ form.reference.id_for_label }}" 
+                                   class="form-control {% if form.reference.errors %}is-invalid{% endif %}" 
+                                   value="{{ form.reference.value|default:'' }}">
+                            {% if form.reference.errors %}
+                            <div class="invalid-feedback d-block">{{ form.reference.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">{{ form.reference.help_text }}</div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Submit Transfer Details</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'credit_purchase' %}" class="btn btn-outline-secondary">Back to Purchase Options</a>
+                        <a href="{% url 'dashboard' %}" class="btn btn-link">Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Invoice #{{ invoice.invoice_number }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Invoice #{{ invoice.invoice_number }}</h5>
+                    <div>
+                        <a href="{% url 'invoice_list' %}" class="btn btn-light btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to Invoices
+                        </a>
+                        <a href="{% url 'invoice_pdf' invoice.id %}" class="btn btn-light btn-sm ml-2" target="_blank">
+                            <i class="fas fa-file-pdf"></i> View PDF
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Billed To:</h6>
+                            <div>{{ invoice.business.company_name }}</div>
+                            <div>{{ invoice.business.address }}</div>
+                            <div>{{ invoice.business.city }}, {{ invoice.business.country }}</div>
+                            <div>{{ invoice.business.email }}</div>
+                            <div>{{ invoice.business.phone }}</div>
+                        </div>
+                        <div class="col-md-6 text-md-right">
+                            <h6 class="text-primary">Invoice Details:</h6>
+                            <div><strong>Date Issued:</strong> {{ invoice.issued_date|date:"F d, Y" }}</div>
+                            <div><strong>Due Date:</strong> {{ invoice.due_date|date:"F d, Y" }}</div>
+                            <div>
+                                <strong>Status:</strong> 
+                                {% if invoice.status == 'paid' %}
+                                <span class="badge badge-success">Paid</span>
+                                {% elif invoice.status == 'overdue' %}
+                                <span class="badge badge-danger">Overdue</span>
+                                {% else %}
+                                <span class="badge badge-warning">Pending</span>
+                                {% endif %}
+                            </div>
+                            <div><strong>Invoice Type:</strong> {{ invoice.get_invoice_type_display }}</div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Rate (KES)</th>
+                                    <th>Amount (KES)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ invoice.get_invoice_type_display }}</td>
+                                    <td>{{ invoice.credits }} credits</td>
+                                    <td>{{ credit_value_kes }}</td>
+                                    <td>{{ invoice.amount }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                                    <td><strong>KES {{ invoice.amount }}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if invoice.notes %}
+                    <div class="mt-4">
+                        <h6 class="text-primary">Notes:</h6>
+                        <div class="p-3 bg-light rounded">{{ invoice.notes }}</div>
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-4">
+                        <h6 class="text-primary">Payment Information:</h6>
+                        <div class="p-3 bg-light rounded">
+                            <p><strong>Bank Transfer:</strong> Account Name: Influenza Platform Ltd, Account Number: 1234567890, Bank: Example Bank</p>
+                            <p><strong>M-Pesa:</strong> Paybill Number: 123456, Account Number: Your Business Name</p>
+                        </div>
+                    </div>
+
+                    {% if user.is_staff and invoice.status != 'paid' %}
+                    <div class="mt-4">
+                        <h6 class="text-primary">Admin Actions:</h6>
+                        <form method="post" action="{% url 'mark_invoice_paid' invoice.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check"></i> Mark as Paid
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-center">
+                    <small class="text-muted">Thank you for your business!</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

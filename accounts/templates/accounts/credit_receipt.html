@@ -1,0 +1,133 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Credit Purchase Receipt{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm" id="receipt">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Credit Purchase Receipt</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Receipt Header -->
+                    <div class="text-center mb-4">
+                        <img src="{% static 'accounts/img/logo.png' %}" alt="Influenza Platform" height="60" class="mb-3">
+                        <h4>Influenza Platform</h4>
+                        <p class="text-muted mb-0">Credit Purchase Receipt</p>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Receipt Details -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Receipt To:</h6>
+                            <p class="mb-1"><strong>{{ business.company_name }}</strong></p>
+                            <p class="mb-1">{{ business.address }}</p>
+                            <p class="mb-1">{{ business.city }}, {{ business.country }}</p>
+                            <p class="mb-0">{{ business.user.email }}</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <h6 class="text-muted">Receipt Details:</h6>
+                            <p class="mb-1"><strong>Receipt #:</strong> INF-CR-{{ transaction.id }}</p>
+                            <p class="mb-1"><strong>Date:</strong> {{ transaction.timestamp|date:"F d, Y" }}</p>
+                            <p class="mb-1"><strong>Time:</strong> {{ transaction.timestamp|date:"H:i:s" }}</p>
+                            <p class="mb-0"><strong>Reference:</strong> {{ transaction.reference }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Transaction Details -->
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Description</th>
+                                    <th class="text-end">Credits</th>
+                                    <th class="text-end">Rate (KES)</th>
+                                    <th class="text-end">Amount (KES)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ transaction.description }}</td>
+                                    <td class="text-end">{{ transaction.amount }}</td>
+                                    <td class="text-end">{{ credit_value_kes }}</td>
+                                    <td class="text-end">{{ transaction.amount_kes|intcomma }}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3" class="text-end">Total:</th>
+                                    <th class="text-end">{{ transaction.amount_kes|intcomma }} KES</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <!-- Payment Information -->
+                    <div class="mb-4">
+                        <h6>Payment Information:</h6>
+                        <p class="mb-0">{{ transaction.reference }}</p>
+                    </div>
+                    
+                    <!-- Thank You Note -->
+                    <div class="text-center mb-4">
+                        <h5>Thank You for Your Purchase!</h5>
+                        <p class="text-muted mb-0">For any questions, please contact support@influenza.ke</p>
+                    </div>
+                </div>
+                <div class="card-footer bg-light d-flex justify-content-between">
+                    <button class="btn btn-primary" id="download-receipt">
+                        <i class="bi bi-download"></i> Download Receipt
+                    </button>
+                    <a href="{% url 'credit_history' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to History
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Include html2pdf.js for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle download receipt button
+        const downloadBtn = document.getElementById('download-receipt');
+        const receipt = document.getElementById('receipt');
+        
+        downloadBtn.addEventListener('click', function() {
+            // Clone the receipt element to modify it for PDF
+            const receiptClone = receipt.cloneNode(true);
+            
+            // Remove the footer with buttons
+            const footer = receiptClone.querySelector('.card-footer');
+            if (footer) {
+                footer.remove();
+            }
+            
+            // Configure html2pdf options
+            const options = {
+                margin: 10,
+                filename: 'Influenza_Credit_Receipt_{{ transaction.id }}.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Generate PDF
+            html2pdf()
+                .from(receiptClone)
+                .set(options)
+                .save();
+        });
+    });
+</script>
+{% endblock %}

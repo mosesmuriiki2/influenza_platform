@@ -1,0 +1,314 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Credit System Reconciliation{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Credit System Reconciliation</h2>
+                <div>
+                    <a href="{% url 'master_credit_dashboard' %}" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <button class="btn btn-outline-primary" onclick="window.print()">
+                        <i class="bi bi-printer"></i> Print Report
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Reconciliation Summary -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Reconciliation Summary</h5>
+                        <span class="text-muted">{{ reconciliation.date|date:"F d, Y" }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Master Wallet Balance -->
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 border-primary">
+                                <div class="card-body">
+                                    <h6 class="card-title text-primary">Master Wallet Balance</h6>
+                                    <h3 class="mb-0">{{ reconciliation.master_wallet_balance }}</h3>
+                                    <p class="text-muted">{{ reconciliation.master_wallet_balance_kes|intcomma }} KES</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Total Business Credits -->
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 border-success">
+                                <div class="card-body">
+                                    <h6 class="card-title text-success">Total Business Credits</h6>
+                                    <h3 class="mb-0">{{ reconciliation.total_business_credits }}</h3>
+                                    <p class="text-muted">{{ reconciliation.total_business_credits_kes|intcomma }} KES</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Reconciliation Status -->
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 {% if reconciliation.is_balanced %}border-success{% else %}border-danger{% endif %}">
+                                <div class="card-body">
+                                    <h6 class="card-title {% if reconciliation.is_balanced %}text-success{% else %}text-danger{% endif %}">
+                                        Reconciliation Status
+                                    </h6>
+                                    <h3 class="mb-0">
+                                        {% if reconciliation.is_balanced %}
+                                        <i class="bi bi-check-circle text-success"></i> Balanced
+                                        {% else %}
+                                        <i class="bi bi-exclamation-triangle text-danger"></i> Discrepancy
+                                        {% endif %}
+                                    </h3>
+                                    <p class="text-muted">
+                                        {% if reconciliation.is_balanced %}
+                                        All accounts reconciled successfully
+                                        {% else %}
+                                        Difference: {{ reconciliation.discrepancy }} credits
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6>Daily Transaction Summary</h6>
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td>Total Credits Purchased</td>
+                                        <td class="text-end">{{ reconciliation.total_credits_purchased }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Credits Used for Campaigns</td>
+                                        <td class="text-end">{{ reconciliation.total_credits_used }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Manual Allocations</td>
+                                        <td class="text-end">{{ reconciliation.total_manual_allocations }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Net Credit Movement</td>
+                                        <td class="text-end fw-bold">
+                                            {{ reconciliation.net_credit_movement }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Payment Method Breakdown</h6>
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td>M-Pesa Payments</td>
+                                        <td class="text-end">{{ reconciliation.mpesa_payments_count }}</td>
+                                        <td class="text-end">{{ reconciliation.mpesa_payments_credits }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bank Transfers</td>
+                                        <td class="text-end">{{ reconciliation.bank_transfers_count }}</td>
+                                        <td class="text-end">{{ reconciliation.bank_transfers_credits }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Manual Allocations</td>
+                                        <td class="text-end">{{ reconciliation.manual_allocations_count }}</td>
+                                        <td class="text-end">{{ reconciliation.manual_allocations_credits }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total</td>
+                                        <td class="text-end fw-bold">{{ reconciliation.total_payments_count }}</td>
+                                        <td class="text-end fw-bold">{{ reconciliation.total_payments_credits }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    {% if not reconciliation.is_balanced %}
+                    <div class="alert alert-danger mt-3">
+                        <h6 class="alert-heading">Reconciliation Issues Detected</h6>
+                        <p>There is a discrepancy of {{ reconciliation.discrepancy }} credits between the master wallet and business wallets.</p>
+                        <hr>
+                        <p class="mb-0">Please review the transaction history and take appropriate action.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Transaction History -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Daily Transaction History</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Business</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Reference</th>
+                                    <th class="text-end">Credits</th>
+                                    <th class="text-end">Business Balance</th>
+                                    <th class="text-end">Master Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in daily_transactions %}
+                                <tr>
+                                    <td>{{ transaction.timestamp|time:"H:i:s" }}</td>
+                                    <td>{{ transaction.wallet.business.company_name }}</td>
+                                    <td>
+                                        {% if transaction.transaction_type == 'purchase' %}
+                                        <span class="badge bg-success">Purchase</span>
+                                        {% elif transaction.transaction_type == 'campaign' %}
+                                        <span class="badge bg-primary">Campaign</span>
+                                        {% elif transaction.transaction_type == 'allocation' %}
+                                        <span class="badge bg-info">Allocation</span>
+                                        {% elif transaction.transaction_type == 'refund' %}
+                                        <span class="badge bg-warning">Refund</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ transaction.transaction_type|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ transaction.description }}</td>
+                                    <td>{{ transaction.reference }}</td>
+                                    <td class="text-end">
+                                        {% if transaction.transaction_type == 'purchase' or transaction.transaction_type == 'allocation' or transaction.transaction_type == 'refund' %}
+                                        <span class="text-success">+{{ transaction.amount }}</span>
+                                        {% elif transaction.transaction_type == 'campaign' %}
+                                        <span class="text-danger">-{{ transaction.amount }}</span>
+                                        {% else %}
+                                        {{ transaction.amount }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">{{ transaction.balance_after }}</td>
+                                    <td class="text-end">{{ transaction.master_balance_after }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center py-3">No transactions for this day</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Business Wallet Summary -->
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Business Wallet Summary</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Business</th>
+                                    <th>Email</th>
+                                    <th class="text-end">Opening Balance</th>
+                                    <th class="text-end">Credits Added</th>
+                                    <th class="text-end">Credits Used</th>
+                                    <th class="text-end">Closing Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for summary in business_summaries %}
+                                <tr>
+                                    <td>{{ summary.business.company_name }}</td>
+                                    <td>{{ summary.business.user.email }}</td>
+                                    <td class="text-end">{{ summary.opening_balance }}</td>
+                                    <td class="text-end">{{ summary.credits_added }}</td>
+                                    <td class="text-end">{{ summary.credits_used }}</td>
+                                    <td class="text-end">{{ summary.closing_balance }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-3">No business wallet data available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reconciliation History -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Previous Reconciliations</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th class="text-end">Master Balance</th>
+                                    <th class="text-end">Business Credits</th>
+                                    <th class="text-end">Discrepancy</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in previous_reconciliations %}
+                                <tr>
+                                    <td>{{ record.date|date:"M d, Y" }}</td>
+                                    <td class="text-end">{{ record.master_wallet_balance }}</td>
+                                    <td class="text-end">{{ record.total_business_credits }}</td>
+                                    <td class="text-end">
+                                        {% if record.discrepancy != 0 %}
+                                        <span class="text-danger">{{ record.discrepancy }}</span>
+                                        {% else %}
+                                        0
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if record.is_balanced %}
+                                        <span class="badge bg-success">Balanced</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Discrepancy</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'credit_reconciliation' %}?date={{ record.date|date:'Y-m-d' }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-3">No previous reconciliation records</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add any reconciliation-specific JavaScript here
+    });
+</script>
+{% endblock %}
